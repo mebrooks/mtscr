@@ -4,12 +4,14 @@
 #' @param .id_column Name of the column containing participants' id
 #' @param .item_column Name of the column containing distinct trials (e.g. names of items in AUT)
 #' @param .value_column Name of the column containing divergent thinking scores (e.g. semantic distance)
-#' @param preserve_existing Logical, return the whole database with additional columns (`TRUE`) or just the additional columns (`FALSE`)
+#' @param preserve_existing Logical, return the whole database with additional columns (`TRUE`) or only the additional columns (`FALSE`)
 #'
-#' @return The input data frame with columns
-#'     - `max_ind` (0 for the best answer)
-#'     - `top2_ind` (0 for the two best answers)
-#'     - `rank` (ranking of the answer relative to participant and item)
+#' @return The input data frame with additional columns:
+#'     \describe{
+#'         \item{`max_ind`}{Numerical, 0 for the best answer}
+#'         \item{`top2_ind`}{Numerical, 0 for the two best answers}
+#'         \item{`rank`}{Numerical, ranking of the answer relative to participant and item}
+#'     }
 #'     The values are relative to the participant AND item, so the values for different participants scored for different tasks (e.g. uses for "brick" and "can") are distinct.
 #' @export
 #'

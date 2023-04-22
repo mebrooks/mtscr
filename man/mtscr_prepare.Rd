@@ -21,13 +21,15 @@ mtscr_prepare(
 
 \item{.value_column}{Name of the column containing divergent thinking scores (e.g. semantic distance)}
 
-\item{preserve_existing}{Logical, return the whole database with additional columns (`TRUE`) or just the additional columns (`FALSE`)}
+\item{preserve_existing}{Logical, return the whole database with additional columns (`TRUE`) or only the additional columns (`FALSE`)}
 }
 \value{
-The input data frame with columns
-    - `max_ind` (0 for the best answer)
-    - `top2_ind` (0 for the two best answers)
-    - `rank` (ranking of the answer relative to participant and item)
+The input data frame with additional columns:
+    \describe{
+        \item{`max_ind`}{Numerical, 0 for the best answer}
+        \item{`top2_ind`}{Numerical, 0 for the two best answers}
+        \item{`rank`}{ranking of the answer relative to participant and item}
+    }
     The values are relative to the participant AND item, so the values for different participants scored for different tasks (e.g. uses for "brick" and "can") are distinct.
 }
 \description{
