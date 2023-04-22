@@ -13,6 +13,8 @@
 #'     The values are relative to the participant AND item, so the values for different participants scored for different tasks (e.g. uses for "brick" and "can") are distinct.
 #' @export
 #'
+#' @importFrom rlang .data
+#'
 #' @examples
 #' data("mtscr_creativity", package = "mtscr")
 #' mtscr_prepare(mtscr_creativity, id, item, SemDis_MEAN) # columns' names can also be "quoted"
@@ -43,26 +45,26 @@ mtscr_prepare <- function(df, .id_column, .item_column, .value_column, preserve_
       z = as.vector(scale(.data[[.value_column]]))
     ) |>
     dplyr::group_by({{ .id_column }}, {{ .item_column }}) |>
-    dplyr::arrange(dplyr::desc(z)) |>
+    dplyr::arrange(dplyr::desc(.data$z)) |>
     dplyr::mutate(
-      ordering = rank(-z),
+      ordering = rank(-.data$z),
       max_ind = dplyr::case_match(
-        ordering,
+        .data$ordering,
         1 ~ 0,
         .default = 1
       ),
       top2_ind = dplyr::case_match(
-        ordering,
+        .data$ordering,
         1:2 ~ 0,
         .default = 1
       )
     ) |>
     dplyr::ungroup() |>
     dplyr::arrange({{ .id_column }}, {{ .item_column }}) |>
-    dplyr::relocate(ordering, .after = top2_ind)
+    dplyr::relocate(.data$ordering, .after = .data$top2_ind)
 
   if (!preserve_existing) {
-    df <- dplyr::select(df, max_ind, top2_ind, ordering)
+    df <- dplyr::select(df, .data$max_ind, .data$top2_ind, .data$ordering)
   }
 
   return(df)
