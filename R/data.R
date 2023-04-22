@@ -1,0 +1,23 @@
+#' Creativity assessment through semantic distance dataset
+#'
+#' A dataset from Forthmann, Karwowski & Beaty ([2023](https://doi.org/10.1037/aca0000571)) paper.
+#' It contains a set of responses in Alternative Uses Task for different items with their
+#' semantic distance assessment.
+#'
+#' @format ## `mtscr_creativity`
+#' A `tibble` with 4585 rows and 10 columns:
+#' \describe{
+#'   \item{id}{patricipants' unique identification number}
+#'   \item{response}{response in AUT}
+#'   \item{item}{item for which alternative uses were searched for}
+#'   \item{SemDis_cbowukwacsubtitle_nf_m}{}
+#'   \item{SemDis_cbowsubtitle_nf_m}{}
+#'   \item{SemDis_cbowBNCwikiukwac_nf_m}{}
+#'   \item{SemDis_TASA_nf_m}{}
+#'   \item{SemDis_glove_nf_m}{}
+#'   \item{SemDis_MEAN}{}
+#'   \item{SemDis_factor}{}
+#' }
+#'
+#' @source <https://osf.io/7rgsp/>
+"mtscr_creativity"
