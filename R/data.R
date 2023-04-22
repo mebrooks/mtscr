@@ -4,6 +4,7 @@
 #' It contains a set of responses in Alternative Uses Task for different items with their
 #' semantic distance assessment.
 #'
+#' @return a [tibble][tibble::tibble-package]
 #' @format ## `mtscr_creativity`
 #' A `tibble` with 4585 rows and 10 columns:
 #' \describe{

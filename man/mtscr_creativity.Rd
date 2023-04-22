@@ -26,6 +26,9 @@ A `tibble` with 4585 rows and 10 columns:
 \usage{
 mtscr_creativity
 }
+\value{
+a [tibble][tibble::tibble-package]
+}
 \description{
 A dataset from Forthmann, Karwowski & Beaty ([2023](https://doi.org/10.1037/aca0000571)) paper.
 It contains a set of responses in Alternative Uses Task for different items with their

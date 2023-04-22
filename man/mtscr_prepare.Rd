@@ -34,6 +34,6 @@ The input data frame with columns
 Prepare database for MTS
 }
 \examples{
-data(mtscr_creativty)
-mtscr_prepare(mtscr_creativty, id, item, SemDis_MEAN) # columns' names can also be "quoted"
+data("mtscr_creativity", package = "mtscr")
+mtscr_prepare(mtscr_creativity, id, item, SemDis_MEAN) # columns' names can also be "quoted"
 }

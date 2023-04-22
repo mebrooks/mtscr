@@ -14,8 +14,8 @@
 #' @export
 #'
 #' @examples
-#' data(mtscr_creativty)
-#' mtscr_prepare(mtscr_creativty, id, item, SemDis_MEAN) # columns' names can also be "quoted"
+#' data("mtscr_creativity", package = "mtscr")
+#' mtscr_prepare(mtscr_creativity, id, item, SemDis_MEAN) # columns' names can also be "quoted"
 mtscr_prepare <- function(df, .id_column, .item_column, .value_column, preserve_existing = TRUE) {
   .id_column <- rlang::enquo(.id_column)
   .item_column <- rlang::enquo(.item_column)
