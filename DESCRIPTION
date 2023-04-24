@@ -55,5 +55,6 @@ Imports:
     tibble
 Suggests: 
     broom.mixed,
+    covr,
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
