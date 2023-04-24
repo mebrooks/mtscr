@@ -1,7 +1,7 @@
 # Multidimentional Top Scoring for Creativity Research
 
 <!-- badges: start -->
-[![Codecov test coverage](https://codecov.io/gh/jakub-jedrusiak/mtscr/branch/master/graph/badge.svg)](https://app.codecov.io/gh/jakub-jedrusiak/mtscr?branch=master)
+[![codecov](https://codecov.io/gh/jakub-jedrusiak/mtscr/branch/master/graph/badge.svg?token=N3UGHFK5QN)](https://codecov.io/gh/jakub-jedrusiak/mtscr)
 [![R-CMD-check](https://github.com/jakub-jedrusiak/mtscr/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/jakub-jedrusiak/mtscr/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
