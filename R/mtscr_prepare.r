@@ -27,8 +27,8 @@ mtscr_prepare <- function(df, .id_column, .item_column, .value_column, preserve_
 
   # check if .value_column contains NA
   if (any(is.na(df[[rlang::as_name(.value_column)]]))) {
-    warning("The value column contains NA values. Rows with NA creativity scores have been deleted.")
-    df <- dplyr::filter(df, any(is.na(.data[[.value_column]])))
+    message("The value column contains NA values. Rows with NA creativity scores have been deleted.")
+    df <- dplyr::filter(df, !is.na({{ .value_column }}))
   }
 
   # check if .value_column is numeric
@@ -38,7 +38,7 @@ mtscr_prepare <- function(df, .id_column, .item_column, .value_column, preserve_
 
   # check if df is groupped and ungroup if so
   if (dplyr::is_grouped_df(df)) {
-    warning("The data frame has been ungroupped.")
+    message("The data frame has been ungroupped.")
     df <- dplyr::ungroup(df)
   }
 
@@ -47,26 +47,26 @@ mtscr_prepare <- function(df, .id_column, .item_column, .value_column, preserve_
       .z_score = as.vector(scale(.data[[.value_column]]))
     ) |>
     dplyr::group_by({{ .id_column }}, {{ .item_column }}) |>
-    dplyr::arrange(dplyr::desc(.data$.z_score)) |>
+    dplyr::arrange(dplyr::desc(.z_score)) |>
     dplyr::mutate(
-      .ordering = rank(-.data$.z_score),
+      .ordering = rank(-.z_score),
       .max_ind = dplyr::case_match(
-        .data$.ordering,
+        .ordering,
         1 ~ 0,
         .default = 1
       ),
       .top2_ind = dplyr::case_match(
-        .data$.ordering,
+        .ordering,
         1:2 ~ 0,
         .default = 1
       )
     ) |>
     dplyr::ungroup() |>
     dplyr::arrange({{ .id_column }}, {{ .item_column }}) |>
-    dplyr::relocate(.data$.ordering, .after = .data$.top2_ind)
+    dplyr::relocate(.ordering, .after = .top2_ind)
 
   if (!preserve_existing) {
-    df <- dplyr::select(df, .data$.max_ind, .data$.top2_ind, .data$.ordering)
+    df <- dplyr::select(df, .max_ind, .top2_ind, .ordering)
   }
 
   return(df)
