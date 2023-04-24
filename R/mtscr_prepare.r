@@ -44,18 +44,18 @@ mtscr_prepare <- function(df, .id_column, .item_column, .value_column, preserve_
 
   df <- df |>
     dplyr::mutate(
-      z = as.vector(scale(.data[[.value_column]]))
+      .z_score = as.vector(scale(.data[[.value_column]]))
     ) |>
     dplyr::group_by({{ .id_column }}, {{ .item_column }}) |>
-    dplyr::arrange(dplyr::desc(.data$z)) |>
+    dplyr::arrange(dplyr::desc(.data$.z_score)) |>
     dplyr::mutate(
-      ordering = rank(-.data$z),
-      max_ind = dplyr::case_match(
+      .ordering = rank(-.data$.z_score),
+      .max_ind = dplyr::case_match(
         .data$ordering,
         1 ~ 0,
         .default = 1
       ),
-      top2_ind = dplyr::case_match(
+      .top2_ind = dplyr::case_match(
         .data$ordering,
         1:2 ~ 0,
         .default = 1
@@ -63,10 +63,10 @@ mtscr_prepare <- function(df, .id_column, .item_column, .value_column, preserve_
     ) |>
     dplyr::ungroup() |>
     dplyr::arrange({{ .id_column }}, {{ .item_column }}) |>
-    dplyr::relocate(.data$ordering, .after = .data$top2_ind)
+    dplyr::relocate(.data$.ordering, .after = .data$.top2_ind)
 
   if (!preserve_existing) {
-    df <- dplyr::select(df, .data$max_ind, .data$top2_ind, .data$ordering)
+    df <- dplyr::select(df, .data$.max_ind, .data$.top2_ind, .data$.ordering)
   }
 
   return(df)
