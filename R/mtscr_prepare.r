@@ -51,12 +51,12 @@ mtscr_prepare <- function(df, .id_column, .item_column, .value_column, preserve_
     dplyr::mutate(
       .ordering = rank(-.data$.z_score),
       .max_ind = dplyr::case_match(
-        .data$ordering,
+        .data$.ordering,
         1 ~ 0,
         .default = 1
       ),
       .top2_ind = dplyr::case_match(
-        .data$ordering,
+        .data$.ordering,
         1:2 ~ 0,
         .default = 1
       )
