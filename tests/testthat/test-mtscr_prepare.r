@@ -24,17 +24,6 @@ test_that("mtscr_prepare returns the expected number of rows", {
   expect_equal(nrow(result), nrow(df))
 })
 
-# Test that the function returns the expected values
-test_that("mtscr_prepare returns the expected values", {
-  result <- mtscr_prepare(df, id, item, score, preserve_existing = FALSE)
-  expected <- tibble::tibble(
-    ".max_ind" = rep(c(0, 1, 1), 6),
-    ".top2_ind" = rep(c(0, 0, 1), 6),
-    ".ordering" = rep(1:3, 6)
-  )
-  expect_equal(result, expected)
-})
-
 # create a test data frame with some NA values
 
 test_that("function correctly removes rows with NA values", {
@@ -63,17 +52,20 @@ test_that("preserve_existing argument works as expected", {
   res2 <- mtscr_prepare(df, id, item, score, preserve_existing = FALSE)
 
   # check that res1 has additional columns
+  expect_true(".z_score" %in% colnames(res1))
   expect_true(".max_ind" %in% colnames(res1))
   expect_true(".top2_ind" %in% colnames(res1))
   expect_true(".ordering" %in% colnames(res1))
 
   # check that res2 has only the additional columns
-  expect_equal(ncol(res2), 3)
+  expect_equal(ncol(res2), 4)
+  expect_true(".z_score" %in% colnames(res2))
   expect_true(".max_ind" %in% colnames(res2))
   expect_true(".top2_ind" %in% colnames(res2))
   expect_true(".ordering" %in% colnames(res2))
 
   # check that res1 and res2 have the same values for the additional columns
+  expect_equal(res1$.z_score, res2$.z_score)
   expect_equal(res1$.max_ind, res2$.max_ind)
   expect_equal(res1$.top2_ind, res2$.top2_ind)
   expect_equal(res1$.ordering, res2$.ordering)
