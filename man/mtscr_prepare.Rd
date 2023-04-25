@@ -21,21 +21,21 @@ mtscr_prepare(
 
 \item{.value_column}{Name of the column containing divergent thinking scores (e.g. semantic distance)}
 
-\item{preserve_existing}{Logical, return the whole database with additional columns (`TRUE`) or only the additional columns (`FALSE`)}
+\item{preserve_existing}{Logical, return the whole database with additional columns (\code{TRUE}) or only the additional columns (\code{FALSE})}
 }
 \value{
 The input data frame with additional columns:
-    \describe{
-        \item{`max_ind`}{Numerical, 0 for the best answer}
-        \item{`top2_ind`}{Numerical, 0 for the two best answers}
-        \item{`rank`}{ranking of the answer relative to participant and item}
-    }
-    The values are relative to the participant AND item, so the values for different participants scored for different tasks (e.g. uses for "brick" and "can") are distinct.
+\describe{
+\item{\code{max_ind}}{Numerical, 0 for the best answer}
+\item{\code{top2_ind}}{Numerical, 0 for the two best answers}
+\item{\code{rank}}{Numerical, ranking of the answer relative to participant and item}
+}
+The values are relative to the participant AND item, so the values for different participants scored for different tasks (e.g. uses for "brick" and "can") are distinct.
 }
 \description{
-Prepare database for MTS
+Prepare database for MTS analysis.
 }
 \examples{
 data("mtscr_creativity", package = "mtscr")
-mtscr_prepare(mtscr_creativity, id, item, SemDis_MEAN) # columns' names can also be "quoted"
+mtscr_prepare(mtscr_creativity, id, item, SemDis_MEAN)
 }

@@ -50,11 +50,17 @@ RoxygenNote: 7.2.3
 Depends:
     R (>= 4.1.0)
 Imports: 
+    cli,
     dplyr (>= 1.1.0),
+    glmmTMB,
+    glue,
+    lifecycle,
     rlang,
-    tibble
+    tibble,
+    withr
 Suggests: 
     broom.mixed,
     covr,
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
+Roxygen: list(markdown = TRUE)

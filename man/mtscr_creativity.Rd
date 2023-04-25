@@ -5,32 +5,34 @@
 \alias{mtscr_creativity}
 \title{Creativity assessment through semantic distance dataset}
 \format{
-## `mtscr_creativity`
-A `tibble` with 4585 rows and 10 columns:
+\subsection{\code{mtscr_creativity}}{
+
+A \code{tibble} with 4585 rows and 10 columns:
 \describe{
-  \item{id}{patricipants' unique identification number}
-  \item{response}{response in AUT}
-  \item{item}{item for which alternative uses were searched for}
-  \item{SemDis_cbowukwacsubtitle_nf_m}{}
-  \item{SemDis_cbowsubtitle_nf_m}{}
-  \item{SemDis_cbowBNCwikiukwac_nf_m}{}
-  \item{SemDis_TASA_nf_m}{}
-  \item{SemDis_glove_nf_m}{}
-  \item{SemDis_MEAN}{}
-  \item{SemDis_factor}{}
+\item{id}{patricipants' unique identification number}
+\item{response}{response in AUT}
+\item{item}{item for which alternative uses were searched for}
+\item{SemDis_cbowukwacsubtitle_nf_m}{}
+\item{SemDis_cbowsubtitle_nf_m}{}
+\item{SemDis_cbowBNCwikiukwac_nf_m}{}
+\item{SemDis_TASA_nf_m}{}
+\item{SemDis_glove_nf_m}{}
+\item{SemDis_MEAN}{}
+\item{SemDis_factor}{}
+}
 }
 }
 \source{
-<https://osf.io/7rgsp/>
+\url{https://osf.io/7rgsp/}
 }
 \usage{
 mtscr_creativity
 }
 \value{
-a [tibble][tibble::tibble-package]
+a \link[tibble:tibble-package]{tibble}
 }
 \description{
-A dataset from Forthmann, Karwowski & Beaty ([2023](https://doi.org/10.1037/aca0000571)) paper.
+A dataset from Forthmann, Karwowski & Beaty (\href{https://doi.org/10.1037/aca0000571}{2023}) paper.
 It contains a set of responses in Alternative Uses Task for different items with their
 semantic distance assessment.
 }
