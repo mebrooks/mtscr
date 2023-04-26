@@ -41,7 +41,7 @@ mtscr_prepare <- function(df, .id_column, .item_column, .value_column, preserve_
 
   df <- df |>
     dplyr::mutate(
-      .z_score = as.vector(scale({{ .value_column }}))
+      .z_score = as.vector(scale(!!rlang::ensym(.value_column)))
     ) |>
     dplyr::group_by({{ .id_column }}, {{ .item_column }}) |>
     dplyr::arrange(dplyr::desc(.z_score)) |>
