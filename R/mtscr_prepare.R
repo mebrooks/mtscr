@@ -96,10 +96,10 @@ mtscr_prepare <- function(df, id_column, item_column, score_column, minimal = FA
     dplyr::mutate(
       .ordering = rank(-.z_score), # minus for descending order
       .ordering_0 = .ordering - 1,
-            .ordering_top2_0 = dplyr::case_when(
-                .ordering_0 %in% 0:1 ~ 0,
-                .default = .ordering_0
-            ),
+      .ordering_top2_0 = dplyr::case_when(
+        .ordering_0 %in% 0:1 ~ 0,
+        .default = .ordering_0
+      ),
       .max_ind = dplyr::case_when(
         .ordering == 1 ~ 0, # 0 if the best answer
         .default = 1 # 1 otherwise
@@ -112,7 +112,17 @@ mtscr_prepare <- function(df, id_column, item_column, score_column, minimal = FA
     dplyr::ungroup()
 
   if (minimal) {
-    df <- dplyr::select(df, {{ id_column }}, {{ item_column }}, .z_score, .ordering, .max_ind, .top2_ind)
+    df <- dplyr::select(
+      df,
+      {{ id_column }},
+      {{ item_column }},
+      .z_score,
+      .ordering,
+      .ordering_0,
+      .ordering_top2_0,
+      .max_ind,
+      .top2_ind
+    )
   }
 
   return(df)

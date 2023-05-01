@@ -15,7 +15,7 @@ test_that("mtscr_prepare returns a tibble", {
 # Test that the function adds the expected columns
 test_that("mtscr_prepare adds the expected columns", {
   result <- mtscr_prepare(df, id, item, score)
-  expect_named(result, c(names(df), ".z_score", ".max_ind", ".top2_ind", ".ordering"), ignore.order = TRUE)
+  expect_named(result, c(names(df), ".z_score", ".max_ind", ".top2_ind", ".ordering", ".ordering_0", ".ordering_top2_0"), ignore.order = TRUE)
 })
 
 # Test that the function returns the expected number of rows
@@ -79,14 +79,14 @@ test_that("minimal argument works as expected", {
   res_full <- mtscr_prepare(df, id, item, score, minimal = FALSE)
 
   # check that res_minimal has only the additional columns
-  expect_equal(ncol(res_minimal), 6)
+  expect_equal(ncol(res_minimal), 8)
   expect_true(".z_score" %in% colnames(res_minimal))
   expect_true(".ordering" %in% colnames(res_minimal))
   expect_true(".max_ind" %in% colnames(res_minimal))
   expect_true(".top2_ind" %in% colnames(res_minimal))
 
   # check that res_full has the additional columns
-  expect_equal(ncol(res_full), 7)
+  expect_equal(ncol(res_full), 9)
   expect_true(".z_score" %in% colnames(res_full))
   expect_true(".ordering" %in% colnames(res_full))
   expect_true(".max_ind" %in% colnames(res_full))
