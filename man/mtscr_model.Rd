@@ -4,7 +4,14 @@
 \alias{mtscr_model}
 \title{Create MTS model}
 \usage{
-mtscr_model(df, id_column, item_column, score_column, prepared = FALSE)
+mtscr_model(
+  df,
+  id_column,
+  item_column,
+  score_column,
+  model_type = c("all_max", "all_top2"),
+  prepared = FALSE
+)
 }
 \arguments{
 \item{df}{Data frame in long format}
@@ -15,16 +22,33 @@ mtscr_model(df, id_column, item_column, score_column, prepared = FALSE)
 
 \item{score_column}{Name of the column containing divergent thinking scores (e.g. semantic distance)}
 
+\item{model_type}{Character vector, the type of model to fit. Can be \code{all_max}, \code{all_top2} or both.}
+
 \item{prepared}{Logical, is the data already prepared with \code{mtscr_prepare()}?}
 }
 \value{
-A \code{glmmTMB} model.
+The return value depends on \code{model_type}; if \code{model_type} is a single value,
+the function returns a \code{glmmTMB} model object. If \code{model_type} is a vector of values,
+the function returns a named list of \code{glmmTMB} model objects.
 }
 \description{
 Create MTS model for creativity analysis.
 }
 \examples{
 data("mtscr_creativity", package = "mtscr")
-mtscr_model(mtscr_creativity, id, item, SemDis_MEAN) |>
+
+mtscr_model(mtscr_creativity, id, item, SemDis_MEAN, model_type = "all_max") |>
     broom.mixed::tidy() # tidy print, can use `summary()`
+
+mtscr_model(mtscr_creativity, id, item, SemDis_MEAN, model_type = c("all_max", "all_top2")) |>
+    lapply(broom.mixed::tidy)
+
+# you can prepare data first
+data <- mtscr_prepare(mtscr_creativity, id, item, SemDis_MEAN)
+mtscr_model(data, id, item, SemDis_MEAN, model_type = "all_max", prepared = TRUE)
+
+# predict with model
+data <- mtscr_prepare(mtscr_creativity, id, item, SemDis_MEAN, minimal = TRUE)
+model <- mtscr_model(data, id, item, SemDis_MEAN, prepared = TRUE)
+data$creativity_score <- predict(model[["all_max"]], data)
 }
