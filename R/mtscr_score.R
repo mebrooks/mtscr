@@ -19,7 +19,7 @@
 #' @examples
 #' data("mtscr_creativity", package = "mtscr")
 #' mtscr_score(mtscr_creativity, id, item, SemDis_MEAN)
-#' mtscr_score(mtscr_creativity, id, item, SemDis_MEAN, summarise_for = "person") # one score for person
+#' mtscr_score(mtscr_creativity, id, item, SemDis_MEAN, summarise_for = "both") # one score for person-item
 mtscr_score <- function(df, id_column, item_column, score_column, model_type = c("all_max", "all_top2"), summarise_for = "person", append = FALSE) {
     id_column <- rlang::ensym(id_column)
     item_column <- rlang::ensym(item_column)
