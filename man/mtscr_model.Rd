@@ -4,8 +4,27 @@
 \alias{mtscr_model}
 \title{Create MTS model}
 \usage{
-mtscr_model(df, .id_column, .item_column, .value_column)
+mtscr_model(df, id_column, item_column, score_column, prepared = FALSE)
+}
+\arguments{
+\item{df}{Data frame in long format}
+
+\item{id_column}{Name of the column containing participants' id}
+
+\item{item_column}{Name of the column containing distinct trials (e.g. names of items in AUT)}
+
+\item{score_column}{Name of the column containing divergent thinking scores (e.g. semantic distance)}
+
+\item{prepared}{Logical, is the data already prepared with \code{mtscr_prepare()}?}
+}
+\value{
+A \code{glmmTMB} model.
 }
 \description{
 Create MTS model for creativity analysis.
+}
+\examples{
+data("mtscr_creativity", package = "mtscr")
+mtscr_model(mtscr_creativity, id, item, SemDis_MEAN) |>
+    broom.mixed::tidy() # tidy print, can use `summary()`
 }
