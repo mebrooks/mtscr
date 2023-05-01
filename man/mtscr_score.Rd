@@ -9,7 +9,9 @@ mtscr_score(
   id_column,
   item_column,
   score_column,
-  model_type = c("all_max", "all_top2")
+  model_type = c("all_max", "all_top2"),
+  summarise_for = "person",
+  append = FALSE
 )
 }
 \arguments{
@@ -22,9 +24,20 @@ mtscr_score(
 \item{score_column}{Name of the column containing divergent thinking scores (e.g. semantic distance)}
 
 \item{model_type}{Character vector, the type of model to fit. Can be \code{all_max}, \code{all_top2} or both.}
+
+\item{summarise_for}{Character, whether to get creativity scores for each person, each item or both.
+Can be \code{"person"}, \code{"item"} or \code{"both"}.}
+
+\item{append}{Logical, whether to add the scores columnd to the original data frame ('TRUE') or
+return a new data frame with only the scores ('FALSE'). Additional columns depend on \code{summarise_for}.}
 }
 \value{
-A data frame with the creativity scores in the columns \code{.all_max} and \code{.all_top2}.
+A data frame with creativity scores. If \code{summarise_for} is \code{"person"}, the data frame
+will have one row per person. If \code{summarise_for} is \code{"item"}, the data frame will have one
+row per item. If \code{summarise_for} is \code{"both"}, the data frame will have one row per person-item.
+If \code{append} is \code{TRUE}, the original data frame will be returned with the scores columns added.
+By default (\code{append = FALSE}), only the scores columns and id and/or item columns
+(depending on \code{summarise_for} value) will be returned.
 }
 \description{
 Score creativity with MTS
@@ -32,4 +45,5 @@ Score creativity with MTS
 \examples{
 data("mtscr_creativity", package = "mtscr")
 mtscr_score(mtscr_creativity, id, item, SemDis_MEAN)
+mtscr_score(mtscr_creativity, id, item, SemDis_MEAN, summarise_for = "person") # one score for person
 }
