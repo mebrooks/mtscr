@@ -77,5 +77,6 @@ University of Münster, Fliednerstrasse 21, 48149 Münster, Germany.
 Email: <boris.forthmann@wwu.de>.
 
 The mainteiner of the R package is Jakub Jędrusiak and the technical
-concerns should be directed to him. Well, me. Best way is to open an
-[issue on GitHub](https://github.com/jakub-jedrusiak/mtscr/issues).
+concerns should be directed to him. Well, me. Best way is to open a
+[discussion on
+GitHub](https://github.com/jakub-jedrusiak/mtscr/discussions).
