@@ -38,10 +38,10 @@ Create MTS model for creativity analysis.
 data("mtscr_creativity", package = "mtscr")
 
 mtscr_model(mtscr_creativity, id, item, SemDis_MEAN, model_type = "all_max") |>
-    broom.mixed::tidy() # tidy print, can use `summary()`
+  broom.mixed::tidy() # tidy print, can use `summary()`
 
 mtscr_model(mtscr_creativity, id, item, SemDis_MEAN, model_type = c("all_max", "all_top2")) |>
-    lapply(broom.mixed::tidy)
+  lapply(broom.mixed::tidy)
 
 # you can prepare data first
 data <- mtscr_prepare(mtscr_creativity, id, item, SemDis_MEAN)
