@@ -66,3 +66,24 @@ test_that("append argument works as expected", {
   # check that res_append has the expected column names
   expect_named(res_append, c(names(mtscr_creativity), ".all_max", ".all_top2"), ignore.order = TRUE)
 })
+
+# Test that .all_max and .all_top2 columns are numeric
+test_that(".all_max and .all_top2 columns are numeric", {
+  # call function with model_type = "all_max"
+  res_all_max <- mtscr_score(mtscr_creativity, id, item, SemDis_MEAN, model_type = "all_max")
+
+  # check that .all_max column is numeric
+  expect_type(res_all_max$.all_max, "double")
+
+  # check that variance isn't 0
+  expect_false(var(res_all_max$.all_max) == 0)
+
+  # call function with model_type = "all_top2"
+  res_all_top2 <- mtscr_score(mtscr_creativity, id, item, SemDis_MEAN, model_type = "all_top2")
+
+  # check that .all_top2 column is numeric
+  expect_type(res_all_top2$.all_top2, "double")
+
+  # check that variance isn't 0
+  expect_false(var(res_all_top2$.all_top2) == 0)
+})

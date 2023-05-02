@@ -38,6 +38,26 @@
 #' mtscr_app()
 #' }
 mtscr_app <- function() {
+  needed_packages <- c("DT", "broom.mixed", "datamods", "writexl")
+  needed_packages <- sapply(needed_packages, \(x) {
+    if (system.file(package = x) != "") {
+      c("v" = paste0("You have {.pkg ", x, "} installed."))
+    } else {
+      c("x" = paste0("You don't have {.pkg ", x, "} installed. Install it with {.run install.packages(\"", x, "\")}."))
+    }
+  },
+  USE.NAMES = FALSE
+  )
+
+  if (any(names(needed_packages) == "x")) {
+    cli::cli_abort(
+      c(
+        "The GUI requires some additional packages to be installed.",
+        needed_packages
+      )
+    )
+  }
+
   app_dir <- system.file("GUI", package = "mtscr")
   if (app_dir == "") {
     cli::cli_abort(

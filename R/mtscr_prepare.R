@@ -10,8 +10,8 @@
 #'
 #' @return The input data frame with additional columns:
 #'     \describe{
-#'         \item{`.z_score`}{Numerical, z-score of the creativity score}
-#'         \item{`.ordering`}{Numerical, ranking of the answer relative to participant and item}
+#'         \item{`.data$.z_score`}{Numerical, z-score of the creativity score}
+#'         \item{`.data$.ordering`}{Numerical, ranking of the answer relative to participant and item}
 #'         \item{`.max_ind`}{Numerical, 0 for the best answer, 1 otherwise}
 #'         \item{`.top2_ind`}{Numerical, 0 for the two best answers, 1 otherwise}
 #'     }
@@ -92,20 +92,20 @@ mtscr_prepare <- function(df, id_column, item_column, score_column, minimal = FA
       .z_score = as.vector(scale({{ score_column }}))
     ) |>
     dplyr::group_by({{ id_column }}, {{ item_column }}) |>
-    dplyr::arrange({{ id_column }}, {{ item_column }}, dplyr::desc(.z_score)) |>
+    dplyr::arrange({{ id_column }}, {{ item_column }}, dplyr::desc(.data$.z_score)) |>
     dplyr::mutate(
-      .ordering = rank(-.z_score), # minus for descending order
-      .ordering_0 = .ordering - 1,
+      .ordering = rank(-.data$.z_score), # minus for descending order
+      .ordering_0 = .data$.ordering - 1,
       .ordering_top2_0 = dplyr::case_when(
-        .ordering_0 %in% 0:1 ~ 0,
-        .default = .ordering_0
+        .data$.ordering_0 %in% 0:1 ~ 0,
+        .default = .data$.ordering_0
       ),
       .max_ind = dplyr::case_when(
-        .ordering == 1 ~ 0, # 0 if the best answer
+        .data$.ordering == 1 ~ 0, # 0 if the best answer
         .default = 1 # 1 otherwise
       ),
       .top2_ind = dplyr::case_when(
-        .ordering %in% 1:2 ~ 0, # 0 if the two best answers
+        .data$.ordering %in% 1:2 ~ 0, # 0 if the two best answers
         .default = 1 # 1 otherwise
       )
     ) |>
@@ -116,12 +116,12 @@ mtscr_prepare <- function(df, id_column, item_column, score_column, minimal = FA
       df,
       {{ id_column }},
       {{ item_column }},
-      .z_score,
-      .ordering,
-      .ordering_0,
-      .ordering_top2_0,
-      .max_ind,
-      .top2_ind
+      ".z_score",
+      ".ordering",
+      ".ordering_0",
+      ".ordering_top2_0",
+      ".max_ind",
+      ".top2_ind"
     )
   }
 

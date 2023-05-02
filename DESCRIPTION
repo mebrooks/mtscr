@@ -50,22 +50,22 @@ RoxygenNote: 7.2.3
 Depends:
     R (>= 4.1.0)
 Imports: 
-    broom.mixed,
     cli,
-    datamods,
     dplyr (>= 1.1.0),
-    DT,
     glmmTMB,
     glue,
     lifecycle,
     rlang (>= 0.4.11),
     shiny,
-    tibble,
+    tibble
+Suggests: 
+    broom.mixed,
+    covr,
+    datamods,
+    DT,
+    roxygen2,
+    testthat (>= 3.0.0),
     withr,
     writexl
-Suggests: 
-    covr,
-    roxygen2,
-    testthat (>= 3.0.0)
 Config/testthat/edition: 3
 Roxygen: list(markdown = TRUE)

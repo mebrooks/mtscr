@@ -19,7 +19,9 @@
 #' @examples
 #' data("mtscr_creativity", package = "mtscr")
 #' mtscr_score(mtscr_creativity, id, item, SemDis_MEAN)
-#' mtscr_score(mtscr_creativity, id, item, SemDis_MEAN, summarise_for = "both") # one score for person-item
+#'
+#' # one score for person-item
+#' mtscr_score(mtscr_creativity, id, item, SemDis_MEAN, summarise_for = "both")
 mtscr_score <- function(df, id_column, item_column, score_column, model_type = c("all_max", "all_top2"), summarise_for = "person", append = FALSE) {
   id_column <- rlang::ensym(id_column)
   item_column <- rlang::ensym(item_column)
@@ -41,15 +43,15 @@ mtscr_score <- function(df, id_column, item_column, score_column, model_type = c
 
   # score
   if (length(model_type) > 1) {
-    df$.all_max <- predict(model[["all_max"]], df)
-    df$.all_top2 <- predict(model[["all_top2"]], df)
+    df$.all_max <- stats::predict(model[["all_max"]], df)
+    df$.all_top2 <- stats::predict(model[["all_top2"]], df)
   } else if (model_type == "all_max") {
-    df$.all_max <- predict(model, df)
+    df$.all_max <- stats::predict(model, df)
   } else if (model_type == "all_top2") {
-    df$.all_top2 <- predict(model, df)
+    df$.all_top2 <- stats::predict(model, df)
   }
 
-  df <- dplyr::select(df, -.z_score, -.ordering, -.ordering_0, -.ordering_top2_0, -.max_ind, -.top2_ind)
+  df <- dplyr::select(df, -".z_score", -".ordering", -".ordering_0", -".ordering_top2_0", -".max_ind", -".top2_ind")
 
   # summarise
   if (summarise_for == "person") {
@@ -69,10 +71,10 @@ mtscr_score <- function(df, id_column, item_column, score_column, model_type = c
 
   args <- list()
   if ("all_max" %in% model_type) {
-    args[[".all_max"]] <- rlang::expr(max(.all_max))
+    args[[".all_max"]] <- rlang::parse_expr("max(.all_max)")
   }
   if ("all_top2" %in% model_type) {
-    args[[".all_top2"]] <- rlang::expr(max(.all_top2))
+    args[[".all_top2"]] <- rlang::parse_expr("max(.all_top2)")
   }
 
   df <- df |>

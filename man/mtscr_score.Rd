@@ -45,5 +45,7 @@ Score creativity with MTS
 \examples{
 data("mtscr_creativity", package = "mtscr")
 mtscr_score(mtscr_creativity, id, item, SemDis_MEAN)
-mtscr_score(mtscr_creativity, id, item, SemDis_MEAN, summarise_for = "both") # one score for person-item
+
+# one score for person-item
+mtscr_score(mtscr_creativity, id, item, SemDis_MEAN, summarise_for = "both")
 }

@@ -53,7 +53,7 @@ mtscr_model <- function(df, id_column, item_column, score_column, model_type = c
   formulas <- vector("list", length(model_type))
   i <- 1
   if ("all_max" %in% model_type) {
-    formulas[[i]] <- as.formula(
+    formulas[[i]] <- stats::as.formula(
       paste0(
         ".z_score ~ -1 + ",
         rlang::as_name(item_column),
@@ -69,7 +69,7 @@ mtscr_model <- function(df, id_column, item_column, score_column, model_type = c
   }
 
   if ("all_top2" %in% model_type) {
-    formulas[[i]] <- as.formula(
+    formulas[[i]] <- stats::as.formula(
       paste0(
         ".z_score ~ -1 + ",
         rlang::as_name(item_column),
@@ -89,7 +89,7 @@ mtscr_model <- function(df, id_column, item_column, score_column, model_type = c
     glmmTMB::glmmTMB(
       formula,
       data = df,
-      family = gaussian()
+      family = stats::gaussian()
     )
   })
 
