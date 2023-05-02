@@ -6,3 +6,5 @@
 ^\.github$
 ^original_1\.R$
 ^README\.Rmd$
+^\.lintr$
+^\.covrignore$
