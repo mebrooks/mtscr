@@ -72,7 +72,8 @@ documentation for more details.
 
 ### Graphical User Interface
 
-This package includes a Shiny app which can be used as a GUI. Execute
+This package includes a Shiny app which can be used as a GUI. You can
+find “mtscr GUI” option in RStudio’s Addins menu. Alternatively execute
 `mtscr_app()` to run it.
 
 ![](./man/figures/README-GUI-example.gif)
