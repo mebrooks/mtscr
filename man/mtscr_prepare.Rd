@@ -22,6 +22,8 @@ The input data frame with additional columns:
 \describe{
 \item{\code{.data$.z_score}}{Numerical, z-score of the creativity score}
 \item{\code{.data$.ordering}}{Numerical, ranking of the answer relative to participant and item}
+\item{\code{.data$.ordering_0}}{Numerical, 0 for the best answer}
+\item{\code{.data$.ordering_top2_0}}{Numerical, 0 for the two best answers}
 \item{\code{.max_ind}}{Numerical, 0 for the best answer, 1 otherwise}
 \item{\code{.top2_ind}}{Numerical, 0 for the two best answers, 1 otherwise}
 }

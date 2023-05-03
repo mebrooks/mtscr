@@ -12,7 +12,8 @@ ui <- fluidPage(
       width = 3,
       actionButton("import_window", "Import data"),
       uiOutput("args_dropdowns"),
-      uiOutput("download_buttons")
+      uiOutput("download_buttons"),
+      uiOutput("wide_warning")
     ),
     ## Main panel ----
     mainPanel(
@@ -52,11 +53,11 @@ ui <- fluidPage(
 # Server ----
 server <- function(input, output, session) {
   ## Import data when run ----
-    datamods::import_modal(
-      id = "data_main",
-      from = c("env", "file", "copypaste", "googlesheets", "url"),
-      title = "Import data to be used in application"
-      )
+  datamods::import_modal(
+    id = "data_main",
+    from = c("env", "file", "copypaste", "googlesheets", "url"),
+    title = "Import data to be used in application"
+  )
 
   ## Import button ----
   observeEvent(input$import_window, {
@@ -78,6 +79,7 @@ server <- function(input, output, session) {
       selectInput("item_column", "Select item column:", choices = colnames(imported$data())),
       selectInput("score_column", "Select score column:", choices = colnames(imported$data())),
       selectInput("summarise_for", "Summarise for:", choices = c("person", "item", "both")),
+      selectInput("format", "Output format:", choices = c("long", "wide")),
       actionButton("generate_model", "Generate model →")
     )
   })
@@ -101,8 +103,14 @@ server <- function(input, output, session) {
 
     ### Make UI for scored data ----
     summarise_for <- input$summarise_for
-    scored_data <- mtscr::mtscr_score(data, !!id_col, !!item_col, !!score_col, summarise_for = summarise_for)
-    scored_data_whole <- mtscr::mtscr_score(data, !!id_col, !!item_col, !!score_col, summarise_for = summarise_for, append = TRUE)
+
+    format <- dplyr::case_when(
+      input$format == "long" ~ "minimal_long",
+      input$format == "wide" ~ "minimal_wide"
+    )
+
+    scored_data <- mtscr::mtscr_score(data, !!id_col, !!item_col, !!score_col, summarise_for = summarise_for, format = format)
+    scored_data_whole <- mtscr::mtscr_score(data, !!id_col, !!item_col, !!score_col, summarise_for = summarise_for, format = "full")
     output$scored_data_header <- renderUI(tags$b("Scored data:"))
     output$scored_data <- DT::renderDataTable(scored_data,
       extensions = "Buttons",
@@ -128,6 +136,15 @@ server <- function(input, output, session) {
         downloadButton("whole_xlsx", ".xlsx")
       )
     )
+
+    if (input$format == "wide") {
+      output$wide_warning <- renderText(
+        "<br><b>Note:</b> full database is always in long format."
+      )
+    } else {
+      output$wide_warning <- renderText("")
+    }
+
     ## Download handlers ----
     output$scores_csv <- downloadHandler(
       filename = "scores.csv",

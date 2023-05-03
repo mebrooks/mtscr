@@ -11,7 +11,7 @@ mtscr_score(
   score_column,
   model_type = c("all_max", "all_top2"),
   summarise_for = "person",
-  append = FALSE
+  format = "minimal_long"
 )
 }
 \arguments{
@@ -28,16 +28,28 @@ mtscr_score(
 \item{summarise_for}{Character, whether to get creativity scores for each person, each item or both.
 Can be \code{"person"}, \code{"item"} or \code{"both"}.}
 
-\item{append}{Logical, whether to add the scores columnd to the original data frame ('TRUE') or
-return a new data frame with only the scores ('FALSE'). Additional columns depend on \code{summarise_for}.}
+\item{format}{Character, controls the format of the output data frame. Accepts:
+\describe{
+\item{\code{"minimal_long"}}{default, returns only the columns important for scoring
+(usually ID, item and scores) in long format.}
+\item{\code{"minimal_wide"}}{returns only the columns important for scoring
+(usually ID, item and scores) in wide format. Works only if \code{summarise_for} is \code{"both"}.}
+\item{\code{"full"}}{returns the original data frame with scores columns added.}
+}}
 }
 \value{
-A data frame with creativity scores. If \code{summarise_for} is \code{"person"}, the data frame
+A tibble with creativity scores. If \code{summarise_for} is \code{"person"}, the data frame
 will have one row per person. If \code{summarise_for} is \code{"item"}, the data frame will have one
-row per item. If \code{summarise_for} is \code{"both"}, the data frame will have one row per person-item.
-If \code{append} is \code{TRUE}, the original data frame will be returned with the scores columns added.
-By default (\code{append = FALSE}), only the scores columns and id and/or item columns
-(depending on \code{summarise_for} value) will be returned.
+row per item. If \code{summarise_for} is \code{"both"}, the format depends on the \code{format} argument.
+If it is \code{"minimal_long"}, the data frame will have one row per person-item combination.
+If it is \code{"minimal_wide"}, the data frame will have one row per person and one column per item.
+
+\strong{Important:} if format is \code{"full"}, the data frame will always be in a long format. This means
+that even though one row in the input data frame represents one creative idea, the score
+in the added columns reflects a collective score for that person, item or person-item combination.
+For example if Kowalski has 3 ideas about the use of a brick, all the rows with the brick ideas
+will have the same score in the added columns – the score for Kowalski's brick ideas. If
+\code{summarise_for} is \code{"person"}, the score will be the same for all Kowalski's ideas.
 }
 \description{
 Score creativity with MTS
@@ -48,4 +60,7 @@ mtscr_score(mtscr_creativity, id, item, SemDis_MEAN)
 
 # one score for person-item
 mtscr_score(mtscr_creativity, id, item, SemDis_MEAN, summarise_for = "both")
+}
+\seealso{
+\code{\link[tidyr:pivot_wider]{tidyr::pivot_wider()}} for converting the output to wide format by yourself.
 }

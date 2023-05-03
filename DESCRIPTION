@@ -57,7 +57,8 @@ Imports:
     lifecycle,
     rlang (>= 0.4.11),
     shiny,
-    tibble
+    tibble,
+    tidyr
 Suggests: 
     broom.mixed,
     covr,

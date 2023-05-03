@@ -4,7 +4,12 @@
 \alias{mtscr_app}
 \title{Shiny GUI for mtscr}
 \usage{
-mtscr_app()
+mtscr_app(debug_mode = 0)
+}
+\arguments{
+\item{debug_mode}{Integer. If 0, app runs normally. If 1, \code{needed_packages} are
+returned. If 2, an invalid package is added to \code{needed_packages} and an error
+is thrown.}
 }
 \value{
 Runs the app. No explicit return value.
@@ -13,6 +18,9 @@ Runs the app. No explicit return value.
 Shiny app used as graphical interface for mtscr. Simply invoke \code{mtscr_app()} to run.
 }
 \details{
+To use the GUI you need to have the following packages installed:
+\code{DT}, \code{broom.mixed}, \code{datamods}, \code{writexl}.
+
 First thing you see after running the app is \code{datamods} window for importing your data.
 You can use the data already loaded in your environment or any other option.
 Then you'll see four dropdown lists used to choose arguments for \code{mtscr_model()}

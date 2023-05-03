@@ -3,9 +3,16 @@
 #' Shiny app used as graphical interface for mtscr. Simply invoke `mtscr_app()` to run.
 #'
 #' @return Runs the app. No explicit return value.
+#'
+#' @param debug_mode Integer. If 0, app runs normally. If 1, `needed_packages` are
+#'     returned. If 2, an invalid package is added to `needed_packages` and an error
+#'    is thrown.
 #' @export
 #'
 #' @details
+#' To use the GUI you need to have the following packages installed:
+#' `DT`, `broom.mixed`, `datamods`, `writexl`.
+#'
 #' First thing you see after running the app is `datamods` window for importing your data.
 #' You can use the data already loaded in your environment or any other option.
 #' Then you'll see four dropdown lists used to choose arguments for `mtscr_model()`
@@ -37,8 +44,13 @@
 #' \dontrun{
 #' mtscr_app()
 #' }
-mtscr_app <- function() {
-  needed_packages <- c("DT", "broom.mixed", "datamods", "writexl")
+mtscr_app <- function(debug_mode = 0) {
+  needed_packages <- if (debug_mode == 2) {
+    c("DT", "broom.mixed", "datamods", "writexl", "INVALID_PACKAGE")
+  } else {
+    c("DT", "broom.mixed", "datamods", "writexl")
+  }
+
   needed_packages <- sapply(needed_packages, \(x) {
     if (system.file(package = x) != "") {
       c("v" = paste0("You have {.pkg ", x, "} installed."))
@@ -67,5 +79,9 @@ mtscr_app <- function() {
       )
     )
   }
-  shiny::runApp(app_dir, display.mode = "normal")
+  if (debug_mode == 0) {
+    shiny::runApp(app_dir, display.mode = "normal")
+  } else {
+    return(needed_packages)
+  }
 }

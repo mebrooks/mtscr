@@ -1,16 +1,16 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# Multidimensional Top Scoring for Creativity Research <img src="./man/figures/mtscr-hex.svg" width=200 align="right"/>
+# Multidimensional Top Scoring for Creativity Research <img src="./man/figures/mtscr-hex.svg" width="200" align="right"/>
 
 <!-- badges: start -->
 
-[![codecov](https://codecov.io/gh/jakub-jedrusiak/mtscr/branch/master/graph/badge.svg?token=N3UGHFK5QN)](https://codecov.io/gh/jakub-jedrusiak/mtscr)
+[![codecov](https://codecov.io/gh/jakub-jedrusiak/mtscr/branch/main/graph/badge.svg?token=N3UGHFK5QN)](https://codecov.io/gh/jakub-jedrusiak/mtscr)
 [![R-CMD-check](https://github.com/jakub-jedrusiak/mtscr/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/jakub-jedrusiak/mtscr/actions/workflows/R-CMD-check.yaml)
 
 <!-- badges: end -->
 
-An R adaptation of Multidimentional Top Scoring method presented by
+An R adaptation of Multidimensional Top Scoring method presented by
 Forthmann, Karwowski and Beaty
 ([2023](https://doi.org/10.1037/aca0000571)) adapted from public code in
 the [OSF database](https://osf.io/7rgsp/). The code was adapted to use
@@ -101,6 +101,17 @@ importing window change “Global Environment” to “mtscr” and our
 dataframe should appear in the upper dropdown list. Use `id` for the ID
 column, `item` for the item column and `SemDis_MEAN` for the score
 column.
+
+### Important note
+
+Full database is always in long format. This means that even though one
+row in the input data frame represents one creative idea, the score in
+the added columns reflects a collective score for that person, item or
+person-item combination. For example if Kowalski has 3 ideas about the
+use of a brick, all the rows with the brick ideas **will have the same
+score** in the added columns – the score for Kowalski’s brick ideas. If
+`summarise_for` is `"person"`, the score will be the same for all
+Kowalski’s ideas.
 
 ## Contact
 
