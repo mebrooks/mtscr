@@ -10,11 +10,18 @@ ui <- fluidPage(
     href = "https://fonts.googleapis.com/css?family=Raleway"
   )),
   includeCSS("./www/styles.css"),
-  titlePanel("Multidimentional Top Scoring for Creativity Research"),
+    titlePanel("Multidimentional Top Scoring for Creativity Research"),
   ## Sidebar ----
   sidebarLayout(
     sidebarPanel(
       width = 3,
+      # hex sticker ----
+      img(
+        id = "hex-sticker",
+        src = "https://raw.githubusercontent.com/jakub-jedrusiak/mtscr/main/man/figures/mtscr-hex.svg",
+        alt = "mtscr hex sticker",
+      ),
+      hr(),
       actionButton("import_window", "Import data"),
       uiOutput("args_dropdowns"),
       uiOutput("download_buttons"),
@@ -22,40 +29,29 @@ ui <- fluidPage(
     ),
     ## Main panel ----
     mainPanel(
+      width = 9,
       fluidRow(
-        img(src = "https://raw.githubusercontent.com/jakub-jedrusiak/mtscr/main/man/figures/mtscr-hex.svg", width = 200, vspace = 10, hspace = 10, align = "right"),
-        ### Loading message ----
-        tags$style(type = "text/css", "
-           #loadmessage {
-             position: fixed;
-             top: 0px;
-             left: 0px;
-             width: 100%;
-             padding: 5px 0px 5px 0px;
-             text-align: center;
-             font-weight: bold;
-             font-size: 100%;
-             color: #ffffff;
-             background-color: #0163A2;
-             z-index: 105;
-           }"),
-        conditionalPanel(
-          condition = "$('html').hasClass('shiny-busy')",
-          tags$div("Loading...", id = "loadmessage")
-        ),
         ### Model info ----
         uiOutput("all_max_header"),
         tableOutput("all_max_glance"),
         uiOutput("all_top2_header"),
         tableOutput("all_top2_glance"),
+        ### Loading message ----
+        conditionalPanel(
+          condition = "$('html').hasClass('shiny-busy')",
+          tags$div("Loading...", id = "loadmessage")
+        )
+      ),
+      fluidRow(
         uiOutput("scored_data_header"),
-        DT::dataTableOutput("scored_data")
+        DT::dataTableOutput("scored_data", width = "95%")
       )
     )
   ),
   hr(),
-  div(class = "footer", includeHTML("./www/article_citation.html"))
+  div(class = "footer", includeHTML("./www/article_citation.html")),
 )
+
 
 # Server ----
 server <- function(input, output, session) {
