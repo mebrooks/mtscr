@@ -5,6 +5,11 @@ if (Sys.getenv("RSTUDIO") == "1") {
 
 # UI ----
 ui <- fluidPage(
+  tag("link", list(
+    rel = "stylesheet",
+    href = "https://fonts.googleapis.com/css?family=Raleway"
+  )),
+  includeCSS("./www/styles.css"),
   titlePanel("Multidimentional Top Scoring for Creativity Research"),
   ## Sidebar ----
   sidebarLayout(
@@ -47,7 +52,9 @@ ui <- fluidPage(
         DT::dataTableOutput("scored_data")
       )
     )
-  )
+  ),
+  hr(),
+  div(class = "footer", includeHTML("./www/article_citation.html"))
 )
 
 # Server ----
