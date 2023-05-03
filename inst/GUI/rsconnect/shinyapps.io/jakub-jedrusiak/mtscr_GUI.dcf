@@ -1,0 +1,13 @@
+name: mtscr_GUI
+title: mtscr_GUI
+username:
+account: jakub-jedrusiak
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 9014241
+bundleId: 7166438
+url: https://jakub-jedrusiak.shinyapps.io/mtscr_GUI/
+when: 1683075852.56059
+lastSyncTime: 1683075852.56059
+asMultiple: FALSE
+asStatic: FALSE
