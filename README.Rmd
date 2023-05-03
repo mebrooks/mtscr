@@ -13,7 +13,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-# Multidimensional Top Scoring for Creativity Research {#multidimentional-top-scoring-for-creativity-research}
+# Multidimensional Top Scoring for Creativity Research <img src="./man/figures/mtscr-hex.svg" width=200 align="right"/> {#multidimentional-top-scoring-for-creativity-research}
 
 <!-- badges: start -->
 

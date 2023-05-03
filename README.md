@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# Multidimensional Top Scoring for Creativity Research
+# Multidimensional Top Scoring for Creativity Research <img src="./man/figures/mtscr-hex.svg" width=200 align="right"/>
 
 <!-- badges: start -->
 

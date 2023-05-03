@@ -17,6 +17,7 @@ ui <- fluidPage(
     ## Main panel ----
     mainPanel(
       fluidRow(
+        img(src = "https://raw.githubusercontent.com/jakub-jedrusiak/mtscr/main/man/figures/mtscr-hex.svg", width = 200, vspace = 10, hspace = 10, align = "right"),
         ### Loading message ----
         tags$style(type = "text/css", "
            #loadmessage {
