@@ -73,7 +73,7 @@ mtscr_prepare <- function(df, id_column, item_column, score_column, minimal = FA
   if (!is.numeric(df[[rlang::as_name(score_column)]])) {
     cli::cli_abort(
       c(
-        "{.var {score_column}} must be numeric.",
+        "{.var score_column} must be numeric.",
         "x" = "{.var {rlang::expr_text(substitute(score_column))}} is {.cls {class(df[[rlang::as_name(score_column)]])}}"
       )
     )

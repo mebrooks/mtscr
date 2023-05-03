@@ -21,7 +21,7 @@ knitr::opts_chunk$set(
 
 <!-- badges: end -->
 
-An R adaptation of Multidimensional Top Scoring method presented by Forthmann, Karwowski and Beaty ([2023](https://doi.org/10.1037/aca0000571)) adapted from public code in the [OSF database](https://osf.io/7rgsp/). The code was adapted to use the [tidyverse](https://www.tidyverse.org/) framework for greater flexibility.
+An R adaptation of Multidimensional Top Scoring method presented by Forthmann, Karwowski and Beaty ([2023](https://doi.org/10.1037/aca0000571)) using the code from the [OSF database](https://osf.io/7rgsp/). The code was adapted to use the [tidyverse](https://www.tidyverse.org/) framework for greater flexibility.
 
 ## Installation {#installation}
 
@@ -65,7 +65,7 @@ For testing purposes, you may use `mtscr_creativity` dataframe. In the importing
 
 ### Important note {#important-note}
 
-Full database is always in long format. This means that even though one row in the input data frame represents one creative idea, the score in the added columns reflects a collective score for that person, item or person-item combination. For example if Kowalski has 3 ideas about the use of a brick, all the rows with the brick ideas **will have the same score** in the added columns – the score for Kowalski's brick ideas. If `summarise_for` is `"person"`, the score will be the same for all Kowalski's ideas.
+Full database is always in long format. This means that even though one row in the input data frame represents one creative idea, the score in the added columns reflects a collective score for that person, item or person-item combination. For example if Kowalski has 3 ideas about the use of a brick, all the rows with the brick ideas **will have the same score** in the added columns -- the score for Kowalski's brick ideas. If `summarise_for` is `"person"`, the score will be the same for all Kowalski's ideas.
 
 ## Contact {#contact}
 

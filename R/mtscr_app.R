@@ -79,9 +79,9 @@ mtscr_app <- function(debug_mode = 0) {
       )
     )
   }
-  if (debug_mode == 0) {
-    shiny::runApp(app_dir, display.mode = "normal")
-  } else {
+  if (debug_mode %in% 1:2) {
     return(needed_packages)
+  } else {
+    shiny::runApp(app_dir, display.mode = "normal")
   }
 }

@@ -84,7 +84,12 @@ server <- function(input, output, session) {
       br(),
       selectInput("id_column", "Select ID column:", choices = colnames(imported$data())),
       selectInput("item_column", "Select item column:", choices = colnames(imported$data())),
-      selectInput("score_column", "Select score column:", choices = colnames(imported$data())),
+      selectInput("score_column", "Select score column:", choices = colnames(
+        dplyr::select(
+          imported$data(),
+          dplyr::where(is.numeric)
+        )
+      )),
       selectInput("summarise_for", "Summarise for:", choices = c("person", "item", "both")),
       selectInput("format", "Output format:", choices = c("long", "wide")),
       actionButton("generate_model", "Generate model →")

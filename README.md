@@ -12,9 +12,9 @@
 
 An R adaptation of Multidimensional Top Scoring method presented by
 Forthmann, Karwowski and Beaty
-([2023](https://doi.org/10.1037/aca0000571)) adapted from public code in
-the [OSF database](https://osf.io/7rgsp/). The code was adapted to use
-the [tidyverse](https://www.tidyverse.org/) framework for greater
+([2023](https://doi.org/10.1037/aca0000571)) using the code from the
+[OSF database](https://osf.io/7rgsp/). The code was adapted to use the
+[tidyverse](https://www.tidyverse.org/) framework for greater
 flexibility.
 
 ## Installation
