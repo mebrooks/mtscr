@@ -1,0 +1,12 @@
+citHeader("To cite mtscr in publications use:")
+
+citEntry(
+  entry    = "Manual",
+  title    = "Multidimensional Top Scoring for Creativity Research",
+  author   = "Boris Forthmann, Maciej Karwowski, Roger E. Beaty, Jakub Jędrusiak",
+  year     = "2023",
+  url      = "https://github.com/jakub-jedrusiak/mtscr",
+  textVersion = paste(
+"Forthmann, B., Karwowski, M., Beaty, R. E., Jędrusiak, J. (2023). Multidimensional Top Scoring for Creativity Research. Retrieved from: https://github.com/jakub-jedrusiak/mtscr"
+  )
+)
