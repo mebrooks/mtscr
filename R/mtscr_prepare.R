@@ -24,7 +24,7 @@
 #' @examples
 #' data("mtscr_creativity", package = "mtscr")
 #' mtscr_prepare(mtscr_creativity, id, item, SemDis_MEAN, minimal = TRUE)
-mtscr_prepare <- function(df, id_column, item_column, score_column, minimal = FALSE) {
+mtscr_prepare <- function(df, id_column, item_column, score_column, top = 1, minimal = FALSE) {
   # ensym to make both strings and symbols work
   id_column <- rlang::ensym(id_column)
   item_column <- rlang::ensym(item_column)
@@ -89,6 +89,27 @@ mtscr_prepare <- function(df, id_column, item_column, score_column, minimal = FA
     )
   }
 
+  # check if top is an integer or a vector of integers
+  if (!identical(top, as.integer(top))) {
+    cli::cli_abort(
+      c(
+        "{.arg top} must be an integer or a vector of integers.",
+        "x" = "{.var {rlang::expr_text(substitute(top))}} is {.obj_type_friendly {top}}"
+      )
+    )
+  }
+
+  # check if top contains only positive values
+  if (any(top < 1)) {
+    cli::cli_abort(
+      c(
+        "{.arg top} must be a positive integer or a vector of positive integers.",
+        "x" = "{.var {rlang::expr_text(substitute(top))}} contains non-positive integers."
+      )
+    )
+  }
+
+
   df <- df |>
     dplyr::mutate(df,
       .z_score = as.vector(scale({{ score_column }}))
@@ -96,35 +117,26 @@ mtscr_prepare <- function(df, id_column, item_column, score_column, minimal = FA
     dplyr::group_by({{ id_column }}, {{ item_column }}) |>
     dplyr::arrange({{ id_column }}, {{ item_column }}, dplyr::desc(.data$.z_score)) |>
     dplyr::mutate(
-      .ordering = rank(-.data$.z_score), # minus for descending order
-      .ordering_0 = .data$.ordering - 1,
-      .ordering_top2_0 = dplyr::case_when(
-        .data$.ordering_0 %in% 0:1 ~ 0,
-        .default = .data$.ordering_0
-      ),
-      .max_ind = dplyr::case_when(
-        .data$.ordering == 1 ~ 0, # 0 if the best answer
-        .default = 1 # 1 otherwise
-      ),
-      .top2_ind = dplyr::case_when(
-        .data$.ordering %in% 1:2 ~ 0, # 0 if the two best answers
-        .default = 1 # 1 otherwise
+      .ordering = rank(-.data$.z_score) - 1 # minus for descending order, -1 to start with 0
+    )
+
+  top <- as.list(top)
+
+  df <- purrr::map(top, \(x) {
+    df |>
+      dplyr::mutate(
+        !!glue(".ordering_top{x}") := dplyr::case_when(
+          .ordering < x ~ 0,
+          .default = .data$.ordering
+        )
       )
-    ) |>
-    dplyr::ungroup()
+  }) |>
+  Reduce(dplyr::full_join, x = _) |>
+  suppressMessages()
 
   if (minimal) {
-    df <- dplyr::select(
-      df,
-      {{ id_column }},
-      {{ item_column }},
-      ".z_score",
-      ".ordering",
-      ".ordering_0",
-      ".ordering_top2_0",
-      ".max_ind",
-      ".top2_ind"
-    )
+    df <- df |>
+      dplyr::select({{ id_column }}, {{ item_column }}, ".z_score", dplyr::starts_with(".ordering"))
   }
 
   return(df)

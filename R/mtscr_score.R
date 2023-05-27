@@ -2,29 +2,14 @@
 #'
 #' @inheritParams mtscr_prepare
 #' @inheritParams mtscr_model
-#' @param summarise_for Character, whether to get creativity scores for each person, each item or both.
-#'     Can be `"person"`, `"item"` or `"both"`.
 #' @param format Character, controls the format of the output data frame. Accepts:
 #'     \describe{
-#'         \item{`"minimal_long"`}{default, returns only the columns important for scoring
-#'             (usually ID, item and scores) in long format.}
-#'         \item{`"minimal_wide"`}{returns only the columns important for scoring
-#'             (usually ID, item and scores) in wide format. Works only if `summarise_for` is `"both"`.}
-#'         \item{`"full"`}{returns the original data frame with scores columns added.}
+#'         \item{`"minimal"`}{default, returns only the creativity scores and id columns.}
+#'         \item{`"full"`}{returns the original data frame with creativity scores columns added.}
 #'     }
 #' @return
-#' A tibble with creativity scores. If `summarise_for` is `"person"`, the data frame
-#' will have one row per person. If `summarise_for` is `"item"`, the data frame will have one
-#' row per item. If `summarise_for` is `"both"`, the format depends on the `format` argument.
-#' If it is `"minimal_long"`, the data frame will have one row per person-item combination.
-#' If it is `"minimal_wide"`, the data frame will have one row per person and one column per item.
-#'
-#' **Important:** if format is `"full"`, the data frame will always be in a long format. This means
-#' that even though one row in the input data frame represents one creative idea, the score
-#' in the added columns reflects a collective score for that person, item or person-item combination.
-#' For example if Kowalski has 3 ideas about the use of a brick, all the rows with the brick ideas
-#' will have the same score in the added columns – the score for Kowalski's brick ideas. If
-#' `summarise_for` is `"person"`, the score will be the same for all Kowalski's ideas.
+#' A tibble with creativity scores. If `format = "full"`, the original data frame is
+#' returned with scores columns added. Otherwise, only the scores and id columns are returned.
 #'
 #' @seealso [tidyr::pivot_wider()] for converting the output to wide format by yourself.
 #'
@@ -36,124 +21,108 @@
 #'
 #' # one score for person-item
 #' mtscr_score(mtscr_creativity, id, item, SemDis_MEAN, summarise_for = "both")
-mtscr_score <- function(df, id_column, item_column, score_column, model_type = c("all_max", "all_top2"), summarise_for = "person", format = "minimal_long") {
+mtscr_score <- function(df, id_column, item_column, score_column, top = 1, format = "minimal") {
   id_column <- rlang::ensym(id_column)
   item_column <- rlang::ensym(item_column)
   score_column <- rlang::ensym(score_column)
   df_original <- df
 
-  # check if model_type is valid
-  if (!all(model_type %in% c("all_max", "all_top2"))) {
+  # check if df is a data frame
+  if (!is.data.frame(df)) {
     cli::cli_abort(
       c(
-        "{.arg model_type} must be a subset of {c('all_max', 'all_top2')}.",
-        "x" = "{.var {setdiff(model_type, c('all_max', 'all_top2'))[[1]]}} is not a valid model type."
+        "{.arg df} must be a data frame.",
+        "x" = "{.var {rlang::expr_text(substitute(df))}} is {.obj_type_friendly {df}}"
       )
     )
   }
 
-  # check if summarise_for is of length 1
-  if (length(summarise_for) > 1) {
+  # check if columns exist
+  if (!rlang::has_name(df, rlang::as_name(id_column))) {
     cli::cli_abort(
       c(
-        "{.arg summarise_for} must be of length 1.",
-        "x" = "{.var {summarise_for}} is of length {length(summarise_for)}."
+        "All columns must exist in the data.",
+        "x" = "Column {.var {id_column}} does not exist.",
+        "i" = "Check the spelling."
+      )
+    )
+  }
+  if (!rlang::has_name(df, rlang::as_name(item_column))) {
+    cli::cli_abort(
+      c(
+        "All columns must exist in the data.",
+        "x" = "Column {.var {item_column}} does not exist.",
+        "i" = "Check the spelling."
+      )
+    )
+  }
+  if (!rlang::has_name(df, rlang::as_name(score_column))) {
+    cli::cli_abort(
+      c(
+        "All columns must exist in the data.",
+        "x" = "Column {.var {score_column}} does not exist.",
+        "i" = "Check the spelling."
       )
     )
   }
 
-  # check if summarise_for is valid
-  if (!summarise_for %in% c("person", "item", "both")) {
+  # check if score_column is numeric
+  if (!is.numeric(df[[rlang::as_name(score_column)]])) {
     cli::cli_abort(
       c(
-        "{.arg summarise_for} must be a subset of {c('person', 'item', 'both')}.",
-        "x" = "{.var {summarise_for}} is not a valid value."
+        "{.var score_column} must be numeric.",
+        "x" = "{.var {rlang::expr_text(substitute(score_column))}} is {.cls {class(df[[rlang::as_name(score_column)]])}}"
       )
     )
   }
 
-  # check if format is of length 1
-  if (length(format) > 1) {
+  # check if top is an integer or a vector of integers
+  if (!identical(top, as.integer(top))) {
     cli::cli_abort(
       c(
-        "{.arg format} must be of length 1.",
-        "x" = "{.var {format}} is of length {length(format)}."
+        "{.arg top} must be an integer or a vector of integers.",
+        "x" = "{.var {rlang::expr_text(substitute(top))}} is {.obj_type_friendly {top}}"
       )
     )
   }
 
-  # check if format is valid
-  if (!format %in% c("minimal_long", "minimal_wide", "full")) {
+  # check if top contains only positive values
+  if (any(top < 1)) {
     cli::cli_abort(
       c(
-        "{.arg format} must be a subset of {c('minimal_long', 'minimal_wide', 'full')}.",
-        "x" = "{.var {format}} is not a valid value."
-      )
-    )
-  }
-
-  # message if format is minimal_wide and summarise_for is not both
-  if (format == "minimal_wide" && summarise_for != "both") {
-    cli::cli_inform(
-      c(
-        "{.arg \"minimal_wide\"} works only if {.arg summarise_for = \"both\"}.",
-        "i" = "{.arg \"mininal_wide\"} will have no effect."
+        "{.arg top} must be a positive integer or a vector of positive integers.",
+        "x" = "{.var {rlang::expr_text(substitute(top))}} contains non-positive integers."
       )
     )
   }
 
   # prepare
-  df <- mtscr_prepare(df, !!id_column, !!item_column, !!score_column, minimal = FALSE)
-  model <- mtscr_model(df, !!id_column, !!item_column, !!score_column, model_type = model_type, prepared = TRUE)
+  df <- mtscr_prepare(df, !!id_column, !!item_column, !!score_column, top = top, minimal = FALSE)
+  model <- mtscr_model(df, !!id_column, !!item_column, !!score_column, top = top, prepared = TRUE)
 
   # score
-  if (length(model_type) > 1) {
-    df$.all_max <- stats::predict(model[["all_max"]], df)
-    df$.all_top2 <- stats::predict(model[["all_top2"]], df)
-  } else if (model_type == "all_max") {
-    df$.all_max <- stats::predict(model, df)
-  } else if (model_type == "all_top2") {
-    df$.all_top2 <- stats::predict(model, df)
-  }
+  df <- purrr::map(
+    model,
+    \(x) {
+      top_number <- attr(terms(x), "variables")[[4]] |> # extract number from .ordering_topX
+        toString() |>
+        stringr::str_replace("\\.ordering", ".creativity_score")
 
-  df <- df |>
-    dplyr::select(-".z_score", -".ordering", -".ordering_0", -".ordering_top2_0", -".max_ind", -".top2_ind")
-
-  # summarise
-  if (summarise_for == "person") {
-    groups <- rlang::as_name(id_column)
-  } else if (summarise_for == "item") {
-    groups <- rlang::as_name(item_column)
-  } else if (summarise_for == "both") {
-    groups <- c(rlang::as_name(id_column), rlang::as_name(item_column))
-  }
-
-  args <- list()
-  if ("all_max" %in% model_type) {
-    args[[".all_max"]] <- rlang::parse_expr("max(.all_max)")
-  }
-  if ("all_top2" %in% model_type) {
-    args[[".all_top2"]] <- rlang::parse_expr("max(.all_top2)")
-  }
-
-  df <- df |>
-    dplyr::summarise(
-      !!!args,
-      .by = dplyr::all_of(groups)
-    )
-
-  # wide format
-  if (format == "minimal_wide" && summarise_for == "both") {
-    df <- df |>
-      tidyr::pivot_wider(
-        names_from = rlang::as_name(item_column),
-        values_from = sapply(model_type, \(x) paste0(".", x), USE.NAMES = FALSE)
-      )
-  }
+      glmmTMB::ranef(x)$cond$id |>
+        dplyr::as_tibble(rownames = "id") |>
+        dplyr::select("id", !!top_number := "(Intercept)")
+    }
+  ) |>
+  Reduce(dplyr::full_join, x = _) |>
+  suppressMessages()
 
   # append
   if (format == "full") {
-    df <- dplyr::left_join(df_original, df, by = groups)
+    if (is.numeric(df_original[[rlang::as_name(id_column)]])) {
+      df <- df |>
+        dplyr::mutate(!!rlang::as_name(id_column) := readr::parse_number(!!id_column))
+    }
+    df <- dplyr::left_join(df_original, df, by = rlang::as_name(id_column))
   }
 
   return(df)

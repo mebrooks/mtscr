@@ -55,8 +55,10 @@ Imports:
     glmmTMB,
     glue,
     lifecycle,
+    purrr,
     rlang (>= 0.4.11),
     shiny,
+    stringr,
     tibble,
     tidyr
 Suggests: 

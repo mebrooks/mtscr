@@ -1,7 +1,7 @@
 #' @import readr
 
 mtscr_creativity <- readr::read_csv("data-raw/study2.csv") |>
-  dplyr::select(-response_nofill, -item_nofill) |>
+  dplyr::select("id", "response", "item", "SemDis_MEAN") |>
   dplyr::filter(
     item %in% c(
       "belt", "brick", "broom",
