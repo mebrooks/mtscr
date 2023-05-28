@@ -39,13 +39,13 @@ The mtscr package is not on CRAN yet.
 
 Basic usage involves scoring participants' responses to a divergent thinking task. The package includes a sample dataset `mtscr_creativity` with 4652 responses to the [Alternative Uses Task](https://en.wikipedia.org/wiki/Alternative_uses_test) with semantic distance scored. The dataset comes from the original paper (Forthmann, Karwowski and Beaty, [2023](https://doi.org/10.1037/aca0000571)).
 
-The main function is `mtscr_scores()` which can return a df with scores for each participant, each item or each participant-item combination. Scores come from two models -- `all_max` and `all_top2`. A value for a participant is the maximum value predicted by the model for that participant.
+The main function is `mtscr_scores()` which returns a dataframe with scored responses. It takes a dataframe with responses, an ID column, an item column and a score column as arguments. The score column should contain semantic distance scores for each response. The function adds columns with scores for each person. The number of creativity scores is based on a given number of top answers provided by the `top` argument.
 
 ```{r}
 library("mtscr")
 data("mtscr_creativity", package = "mtscr")
 
-mtscr_score(mtscr_creativity, id, item, SemDis_MEAN)
+mtscr_score(mtscr_creativity, id, item, SemDis_MEAN, top = 1:2)
 ```
 
 `mtscr_score()` does everything automatically. You can also use `mtscr_prepare()` to get your data prepared for modelling by hand and `mtscr_model()` to get the model object. See the functions' documentation for more details.
@@ -60,13 +60,9 @@ This package includes a Shiny app which can be used as a GUI. You can find "mtsc
 
 First thing you see after running the app is [`datamods`](https://github.com/dreamRs/datamods) window for importing your data. You can use the data already loaded in your environment or any other option. Then you'll see four dropdown lists used to choose arguments for `mtscr_model()` and `mtscr_score()` functions. Consult these functions' documentation for more details (execute `?mtscr_score` in the console). When the parameters are chosen, click "Generate model" button. After a while (up to a dozen or so seconds) models' parameters and are shown along with a scored dataframe.
 
-You can download your data as a .csv or an .xlsx file using buttons in the sidebar. You can either download the scores only (i.e. the dataframe you see displayed) or your whole data with `.all_max` and `.all_top2` columns added.
+You can download your data as a .csv or an .xlsx file using buttons in the sidebar. You can either download the scores only (i.e. the dataframe you see displayed) or your whole data with scores columns added.
 
 For testing purposes, you may use `mtscr_creativity` dataframe. In the importing window change "Global Environment" to "mtscr" and our dataframe should appear in the upper dropdown list. Use `id` for the ID column, `item` for the item column and `SemDis_MEAN` for the score column.
-
-### Important note {#important-note}
-
-Full database is always in long format. This means that even though one row in the input data frame represents one creative idea, the score in the added columns reflects a collective score for that person, item or person-item combination. For example if Kowalski has 3 ideas about the use of a brick, all the rows with the brick ideas **will have the same score** in the added columns -- the score for Kowalski's brick ideas. If `summarise_for` is `"person"`, the score will be the same for all Kowalski's ideas.
 
 ## Contact {#contact}
 

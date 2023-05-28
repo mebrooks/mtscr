@@ -41,30 +41,31 @@ Task](https://en.wikipedia.org/wiki/Alternative_uses_test) with semantic
 distance scored. The dataset comes from the original paper (Forthmann,
 Karwowski and Beaty, [2023](https://doi.org/10.1037/aca0000571)).
 
-The main function is `mtscr_scores()` which can return a df with scores
-for each participant, each item or each participant-item combination.
-Scores come from two models – `all_max` and `all_top2`. A value for a
-participant is the maximum value predicted by the model for that
-participant.
+The main function is `mtscr_scores()` which returns a dataframe with
+scored responses. It takes a dataframe with responses, an ID column, an
+item column and a score column as arguments. The score column should
+contain semantic distance scores for each response. The function adds
+columns with scores for each person. The number of creativity scores is
+based on a given number of top answers provided by the `top` argument.
 
 ``` r
 library("mtscr")
 data("mtscr_creativity", package = "mtscr")
 
-mtscr_score(mtscr_creativity, id, item, SemDis_MEAN)
+mtscr_score(mtscr_creativity, id, item, SemDis_MEAN, top = 1:2)
 #> # A tibble: 149 × 3
-#>       id .all_max .all_top2
-#>    <dbl>    <dbl>     <dbl>
-#>  1 84176    0.783    0.516 
-#>  2 84177    0.133   -0.0466
-#>  3 84178    0.568    0.348 
-#>  4 84188    1.17     0.975 
-#>  5 84193    0.342    0.0979
-#>  6 84206    0.331    0.148 
-#>  7 84211    0.595    0.484 
-#>  8 84226    0.879    0.658 
-#>  9 84228    0.778    0.587 
-#> 10 84236    1.10     0.870 
+#>    id    .creativity_score_top1 .creativity_score_top2
+#>    <chr>                  <dbl>                  <dbl>
+#>  1 84176                 0.142                  0.0696
+#>  2 84177                -0.509                 -0.494 
+#>  3 84178                -0.0737                -0.0990
+#>  4 84188                 0.530                  0.527 
+#>  5 84193                -0.299                 -0.350 
+#>  6 84206                -0.310                 -0.301 
+#>  7 84211                -0.0462                 0.0360
+#>  8 84226                 0.239                  0.211 
+#>  9 84228                 0.137                  0.139 
+#> 10 84236                 0.459                  0.422 
 #> # ℹ 139 more rows
 ```
 
@@ -96,25 +97,13 @@ and are shown along with a scored dataframe.
 
 You can download your data as a .csv or an .xlsx file using buttons in
 the sidebar. You can either download the scores only (i.e. the dataframe
-you see displayed) or your whole data with `.all_max` and `.all_top2`
-columns added.
+you see displayed) or your whole data with scores columns added.
 
 For testing purposes, you may use `mtscr_creativity` dataframe. In the
 importing window change “Global Environment” to “mtscr” and our
 dataframe should appear in the upper dropdown list. Use `id` for the ID
 column, `item` for the item column and `SemDis_MEAN` for the score
 column.
-
-### Important note
-
-Full database is always in long format. This means that even though one
-row in the input data frame represents one creative idea, the score in
-the added columns reflects a collective score for that person, item or
-person-item combination. For example if Kowalski has 3 ideas about the
-use of a brick, all the rows with the brick ideas **will have the same
-score** in the added columns – the score for Kowalski’s brick ideas. If
-`summarise_for` is `"person"`, the score will be the same for all
-Kowalski’s ideas.
 
 ## Contact
 
