@@ -74,6 +74,20 @@ mtscr_score(mtscr_creativity, id, item, SemDis_MEAN, top = 1:2)
 `mtscr_model()` to get the model object. See the functions’
 documentation for more details.
 
+The model can be summarised to obtain the parameters and reliability
+estimates.
+
+``` r
+mtscr_model(mtscr_creativity, id, item, SemDis_MEAN, top = 1:3) |>
+  mtscr_model_summary()
+#> # A tibble: 3 × 9
+#>   model  nobs sigma logLik    AIC    BIC df.residual emp_rel   FDI
+#>   <chr> <int> <dbl>  <dbl>  <dbl>  <dbl>       <int>   <dbl> <dbl>
+#> 1 top1   4621 0.735 -5335. 10730. 10923.        4591   0.845 0.919
+#> 2 top2   4621 0.767 -5511. 11082. 11275.        4591   0.869 0.932
+#> 3 top3   4621 0.825 -5823. 11705. 11898.        4591   0.877 0.936
+```
+
 ### Graphical User Interface
 
 This package includes a Shiny app which can be used as a GUI. You can

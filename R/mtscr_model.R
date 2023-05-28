@@ -18,11 +18,11 @@
 #' data("mtscr_creativity", package = "mtscr")
 #'
 #' mtscr_model(mtscr_creativity, id, item, SemDis_MEAN) |>
-#'   broom.mixed::tidy() # tidy print, can use `summary()`
+#'   summary()
 #'
 #' # three models for top 1, 2, and 3 answers
 #' mtscr_model(mtscr_creativity, id, item, SemDis_MEAN, top = 1:3) |>
-#'   lapply(broom.mixed::tidy)
+#'   mtscr_model_summary()
 #'
 #' # you can prepare data first
 #' data <- mtscr_prepare(mtscr_creativity, id, item, SemDis_MEAN)

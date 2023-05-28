@@ -101,8 +101,7 @@ server <- function(input, output, session) {
     if (length(top) == 1) {
       model <- list(model)
     }
-    models_summary <- purrr::map(model, broom.mixed::glance) |>
-      dplyr::bind_rows(.id = "model")
+    models_summary <- mtscr::mtscr_model_summary(model)
 
     ### Make UI for summaries ----
     output$models_summary_header <- renderUI(tags$b("Models summary:"))

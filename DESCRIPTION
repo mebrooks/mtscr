@@ -50,18 +50,19 @@ RoxygenNote: 7.2.3
 Depends:
     R (>= 4.1.0)
 Imports: 
+    broom.mixed,
     cli,
     dplyr (>= 1.1.0),
     glmmTMB,
     glue,
     lifecycle,
+    methods,
     purrr,
     readr,
     rlang (>= 0.4.11),
     shiny,
     tibble
 Suggests: 
-    broom.mixed,
     covr,
     datamods,
     DT,
