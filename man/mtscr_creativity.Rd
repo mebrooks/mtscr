@@ -12,13 +12,7 @@ A \code{tibble} with 4585 rows and 10 columns:
 \item{id}{patricipants' unique identification number}
 \item{response}{response in AUT}
 \item{item}{item for which alternative uses were searched for}
-\item{SemDis_cbowukwacsubtitle_nf_m}{}
-\item{SemDis_cbowsubtitle_nf_m}{}
-\item{SemDis_cbowBNCwikiukwac_nf_m}{}
-\item{SemDis_TASA_nf_m}{}
-\item{SemDis_glove_nf_m}{}
-\item{SemDis_MEAN}{}
-\item{SemDis_factor}{}
+\item{SemDis_MEAN}{mean semantic distance}
 }
 }
 }
