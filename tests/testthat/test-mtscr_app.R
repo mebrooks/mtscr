@@ -16,5 +16,5 @@ testthat::test_that("all needed packages are checked", {
 
 # Test that error is thrown if needed packages are not installed
 testthat::test_that("error is thrown if needed packages are not installed", {
-    expect_error(mtscr_app(debug_mode = 2))
+  expect_error(mtscr_app(debug_mode = 2))
 })

@@ -24,35 +24,35 @@
 #' @examples
 #' data("mtscr_creativity", package = "mtscr")
 #' mtscr_model(mtscr_creativity, id, item, SemDis_MEAN, top = 1:3) |>
-#'     mtscr_model_summary()
+#'   mtscr_model_summary()
 mtscr_model_summary <- function(model) {
-    if (!methods::is(model, "list")) {
-        model <- list(model)
-    }
+  if (!methods::is(model, "list")) {
+    model <- list(model)
+  }
 
-    if (!any(purrr::map_lgl(model, methods::is, "glmmTMB"))) {
-        cli::cli_abort(
-            c(
-                "The model must be a glmmTMB object or a list of glmmTMB objects.",
-                "x" = "{.obj_type_friendly {model}} is not a glmmTMB object or a list of glmmTMB objects."
-            )
+  if (!any(purrr::map_lgl(model, methods::is, "glmmTMB"))) {
+    cli::cli_abort(
+      c(
+        "The model must be a glmmTMB object or a list of glmmTMB objects.",
+        "x" = "{.obj_type_friendly {model}} is not a glmmTMB object or a list of glmmTMB objects."
+      )
+    )
+  }
+
+  purrr::map(
+    model,
+    \(x) {
+      st <- glmmTMB::VarCorr(x)[1]$cond$id[1]
+      diag_cov <- x$sdr$diag.cov.random
+      se <- diag_cov[seq_along(length(diag_cov) / 2)] |>
+        mean()
+
+      broom.mixed::glance(x) |>
+        dplyr::mutate(
+          emp_rel = 1 - se / st,
+          FDI = sqrt(.data$emp_rel)
         )
     }
-
-    purrr::map(
-        model,
-        \(x) {
-            st <- glmmTMB::VarCorr(x)[1]$cond$id[1]
-            diag_cov <- x$sdr$diag.cov.random
-            se <- diag_cov[seq_along(length(diag_cov) / 2)] |>
-                mean()
-
-            broom.mixed::glance(x) |>
-                dplyr::mutate(
-                    emp_rel = 1 - se / st,
-                    FDI = sqrt(.data$emp_rel)
-                )
-        }
-    ) |>
-        dplyr::bind_rows(.id = "model")
+  ) |>
+    dplyr::bind_rows(.id = "model")
 }

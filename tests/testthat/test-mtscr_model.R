@@ -65,7 +65,6 @@ test_that("top argument throws an error when invalid values are provided", {
 
 # Test that top argument must be integer
 test_that("top argument must be an integer", {
-
   # call function with top = "yes."
   expect_error(mtscr_model(mtscr_creativity, id, item, SemDis_MEAN, top = "yes."), regexp = "must be an integer")
 
@@ -74,7 +73,6 @@ test_that("top argument must be an integer", {
 
   # call function with top = -2
   expect_error(mtscr_model(mtscr_creativity, id, item, SemDis_MEAN, top = -2), regexp = "positive integer")
-
 })
 
 df <- data.frame(

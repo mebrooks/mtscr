@@ -70,7 +70,6 @@ test_that("invalid format error is thrown", {
 
 # Test that top argument must be integer
 test_that("top argument must be an integer", {
-
   # call function with top = "yes."
   expect_error(mtscr_score(mtscr_creativity, id, item, SemDis_MEAN, top = "yes."), regexp = "must be an integer")
 

@@ -137,8 +137,8 @@ mtscr_score <- function(df, id_column, item_column, score_column, top = 1, forma
         dplyr::select("id", !!col_name := "(Intercept)")
     }
   ) |>
-  Reduce(dplyr::full_join, x = _) |>
-  suppressMessages() # for full_join column names message
+    Reduce(dplyr::full_join, x = _) |>
+    suppressMessages() # for full_join column names message
 
   # append
   if (format == "full") {
