@@ -5,9 +5,9 @@ account: jakub-jedrusiak
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 9014241
-bundleId: 7274390
+bundleId: 7274612
 url: https://jakub-jedrusiak.shinyapps.io/mtscr_GUI/
-when: 1685296055.26148
-lastSyncTime: 1685296055.26151
+when: 1685301988.34171
+lastSyncTime: 1685301988.34171
 asMultiple: FALSE
 asStatic: FALSE
