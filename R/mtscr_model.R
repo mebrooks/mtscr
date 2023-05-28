@@ -3,32 +3,34 @@
 #' Create MTS model for creativity analysis.
 #'
 #' @inheritParams mtscr_prepare
-#' @param model_type Character vector, the type of model to fit. Can be `all_max`, `all_top2` or both.
+#' @param top Integer or vector of integers (see examples), number of top answers
+#'     to include in the model. Default is 1, i.e. only the top answer.
 #' @param prepared Logical, is the data already prepared with `mtscr_prepare()`?
 #'
-#' @return The return value depends on `model_type`; if `model_type` is a single value,
-#'     the function returns a `glmmTMB` model object. If `model_type` is a vector of values,
-#'     the function returns a named list of `glmmTMB` model objects.
+#' @return The return value depends on length of the `top` argument. If `top` is a single
+#'     integer, a `glmmTMB` model is returned. If `top` is a vector of integers, a list
+#'     of `glmmTMB` models is returned, with names corresponding to the `top` values,
+#'     e.g. `top1`, `top2`, etc.
 #'
 #' @export
 #'
 #' @examples
 #' data("mtscr_creativity", package = "mtscr")
 #'
-#' mtscr_model(mtscr_creativity, id, item, SemDis_MEAN, model_type = "all_max") |>
+#' mtscr_model(mtscr_creativity, id, item, SemDis_MEAN) |>
 #'   broom.mixed::tidy() # tidy print, can use `summary()`
 #'
-#' mtscr_model(mtscr_creativity, id, item, SemDis_MEAN, model_type = c("all_max", "all_top2")) |>
+#' # three models for top 1, 2, and 3 answers
+#' mtscr_model(mtscr_creativity, id, item, SemDis_MEAN, top = 1:3) |>
 #'   lapply(broom.mixed::tidy)
 #'
 #' # you can prepare data first
 #' data <- mtscr_prepare(mtscr_creativity, id, item, SemDis_MEAN)
-#' mtscr_model(data, id, item, SemDis_MEAN, model_type = "all_max", prepared = TRUE)
+#' mtscr_model(data, id, item, SemDis_MEAN, prepared = TRUE)
 #'
-#' # predict with model
-#' data <- mtscr_prepare(mtscr_creativity, id, item, SemDis_MEAN, minimal = TRUE)
-#' model <- mtscr_model(data, id, item, SemDis_MEAN, prepared = TRUE)
-#' data$creativity_score <- predict(model[["all_max"]], data)
+#' # extract effects for creativity score by hand
+#' model <- mtscr_model(mtscr_creativity, id, item, SemDis_MEAN, top = 2, prepared = TRUE)
+#' data$creativity_score <- glmmTMB::ranef(model)$cond$id[, 1]
 mtscr_model <- function(df, id_column, item_column, score_column, top = 1, prepared = FALSE) {
   id_column <- rlang::ensym(id_column)
   item_column <- rlang::ensym(item_column)
@@ -162,6 +164,7 @@ mtscr_model <- function(df, id_column, item_column, score_column, top = 1, prepa
   if (length(top) == 1) {
     return(models[[1]])
   } else {
+    names(models) <- paste0("top", top)
     return(models)
   }
 }

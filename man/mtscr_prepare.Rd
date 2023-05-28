@@ -4,36 +4,48 @@
 \alias{mtscr_prepare}
 \title{Prepare database for MTS}
 \usage{
-mtscr_prepare(df, id_column, item_column, score_column, minimal = FALSE)
+mtscr_prepare(
+  df,
+  id_column,
+  item_column,
+  score_column,
+  top = 1,
+  minimal = FALSE
+)
 }
 \arguments{
-\item{df}{Data frame in long format}
+\item{df}{Data frame in long format.}
 
-\item{id_column}{Name of the column containing participants' id}
+\item{id_column}{Name of the column containing participants' id.}
 
-\item{item_column}{Name of the column containing distinct trials (e.g. names of items in AUT)}
+\item{item_column}{Name of the column containing distinct trials (e.g. names of items in AUT).}
 
-\item{score_column}{Name of the column containing divergent thinking scores (e.g. semantic distance)}
+\item{score_column}{Name of the column containing divergent thinking scores
+(e.g. semantic distance).}
 
-\item{minimal}{Logical, append columns to df (\code{FALSE}) or return only \code{id}, \code{item}, and the new columns (\code{TRUE})}
+\item{top}{Integer or vector of integers (see examples), number of top answers
+to prepare indicators for. Default is 1, i.e. only the top answer.}
+
+\item{minimal}{Logical, append columns to df (\code{FALSE}) or return only \code{id}, \code{item},
+and the new columns (\code{TRUE}).}
 }
 \value{
 The input data frame with additional columns:
 \describe{
-\item{\code{.data$.z_score}}{Numerical, z-score of the creativity score}
-\item{\code{.data$.ordering}}{Numerical, ranking of the answer relative to participant and item}
-\item{\code{.data$.ordering_0}}{Numerical, 0 for the best answer}
-\item{\code{.data$.ordering_top2_0}}{Numerical, 0 for the two best answers}
-\item{\code{.max_ind}}{Numerical, 0 for the best answer, 1 otherwise}
-\item{\code{.top2_ind}}{Numerical, 0 for the two best answers, 1 otherwise}
+\item{\code{.z_score}}{Numerical, z-score of the creativity score}
+\item{\code{.ordering}}{Numerical, ranking of the answer relative to participant and item}
+\item{\code{.ordering_topX}}{Numerical, 0 for \emph{X} top answers, otherwise value of \code{.ordering}}
 }
-The values are relative to the participant AND item, so the values for different participants
-scored for different tasks (e.g. uses for "brick" and "can") are distinct.
+Number of \code{.ordering_topX} columns depends on the \code{top} argument. If \code{minimal = TRUE},
+only the new columns and the item and id columns are returned. The values are
+relative to the participant AND item, so the values for different
+participants scored for different tasks (e.g. uses for "brick" and "can") are distinct.
 }
 \description{
 Prepare database for MTS analysis.
 }
 \examples{
 data("mtscr_creativity", package = "mtscr")
-mtscr_prepare(mtscr_creativity, id, item, SemDis_MEAN, minimal = TRUE)
+# Indicators for top 1 and top 2 answers
+mtscr_prepare(mtscr_creativity, id, item, SemDis_MEAN, top = 1:2, minimal = TRUE)
 }

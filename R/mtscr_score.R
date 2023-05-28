@@ -10,6 +10,7 @@
 #' @return
 #' A tibble with creativity scores. If `format = "full"`, the original data frame is
 #' returned with scores columns added. Otherwise, only the scores and id columns are returned.
+#' number of creativity scores columns (e.g. `creativity_score_top2`) depends on the `top` argument.
 #'
 #' @seealso [tidyr::pivot_wider()] for converting the output to wide format by yourself.
 #'
@@ -17,10 +18,10 @@
 #'
 #' @examples
 #' data("mtscr_creativity", package = "mtscr")
-#' mtscr_score(mtscr_creativity, id, item, SemDis_MEAN)
+#' mtscr_score(mtscr_creativity, id, item, SemDis_MEAN, top = 1:2)
 #'
-#' # one score for person-item
-#' mtscr_score(mtscr_creativity, id, item, SemDis_MEAN, summarise_for = "both")
+#' # add scores to the original data frame
+#' mtscr_score(mtscr_creativity, id, item, SemDis_MEAN, format = "full")
 mtscr_score <- function(df, id_column, item_column, score_column, top = 1, format = "minimal") {
   id_column <- rlang::ensym(id_column)
   item_column <- rlang::ensym(item_column)
@@ -101,23 +102,24 @@ mtscr_score <- function(df, id_column, item_column, score_column, top = 1, forma
   model <- mtscr_model(df, !!id_column, !!item_column, !!score_column, top = top, prepared = TRUE)
 
   # score
-  df <- purrr::map(
+  df <- purrr::map2(
     model,
-    \(x) {
-      top_number <- attr(terms(x), "variables")[[4]] |> # extract number from .ordering_topX
-        toString() |>
-        stringr::str_replace("\\.ordering", ".creativity_score")
+    top,
+    \(model, top_number) {
+      col_name <- paste0(".creativity_score_top", top_number)
 
-      glmmTMB::ranef(x)$cond$id |>
+      glmmTMB::ranef(model)$cond$id |>
         dplyr::as_tibble(rownames = "id") |>
-        dplyr::select("id", !!top_number := "(Intercept)")
+        dplyr::select("id", !!col_name := "(Intercept)")
     }
   ) |>
   Reduce(dplyr::full_join, x = _) |>
-  suppressMessages()
+  suppressMessages() # for full_join column names message
 
   # append
   if (format == "full") {
+    # if id_column is numeric, convert it back to numeric
+    # otherwise join will fail
     if (is.numeric(df_original[[rlang::as_name(id_column)]])) {
       df <- df |>
         dplyr::mutate(!!rlang::as_name(id_column) := readr::parse_number(!!id_column))

@@ -2,28 +2,32 @@
 #'
 #' Prepare database for MTS analysis.
 #'
-#' @param df Data frame in long format
-#' @param id_column Name of the column containing participants' id
-#' @param item_column Name of the column containing distinct trials (e.g. names of items in AUT)
-#' @param score_column Name of the column containing divergent thinking scores (e.g. semantic distance)
-#' @param minimal Logical, append columns to df (`FALSE`) or return only `id`, `item`, and the new columns (`TRUE`)
+#' @param df Data frame in long format.
+#' @param id_column Name of the column containing participants' id.
+#' @param item_column Name of the column containing distinct trials (e.g. names of items in AUT).
+#' @param score_column Name of the column containing divergent thinking scores
+#'     (e.g. semantic distance).
+#' @param top Integer or vector of integers (see examples), number of top answers
+#'     to prepare indicators for. Default is 1, i.e. only the top answer.
+#' @param minimal Logical, append columns to df (`FALSE`) or return only `id`, `item`,
+#'     and the new columns (`TRUE`).
 #'
 #' @return The input data frame with additional columns:
 #'     \describe{
-#'         \item{`.data$.z_score`}{Numerical, z-score of the creativity score}
-#'         \item{`.data$.ordering`}{Numerical, ranking of the answer relative to participant and item}
-#'         \item{`.data$.ordering_0`}{Numerical, 0 for the best answer}
-#'         \item{`.data$.ordering_top2_0`}{Numerical, 0 for the two best answers}
-#'         \item{`.max_ind`}{Numerical, 0 for the best answer, 1 otherwise}
-#'         \item{`.top2_ind`}{Numerical, 0 for the two best answers, 1 otherwise}
+#'         \item{`.z_score`}{Numerical, z-score of the creativity score}
+#'         \item{`.ordering`}{Numerical, ranking of the answer relative to participant and item}
+#'         \item{`.ordering_topX`}{Numerical, 0 for *X* top answers, otherwise value of `.ordering`}
 #'     }
-#'     The values are relative to the participant AND item, so the values for different participants
-#'     scored for different tasks (e.g. uses for "brick" and "can") are distinct.
+#'     Number of `.ordering_topX` columns depends on the `top` argument. If `minimal = TRUE`,
+#'     only the new columns and the item and id columns are returned. The values are
+#'     relative to the participant AND item, so the values for different
+#'     participants scored for different tasks (e.g. uses for "brick" and "can") are distinct.
 #' @export
 #'
 #' @examples
 #' data("mtscr_creativity", package = "mtscr")
-#' mtscr_prepare(mtscr_creativity, id, item, SemDis_MEAN, minimal = TRUE)
+#' # Indicators for top 1 and top 2 answers
+#' mtscr_prepare(mtscr_creativity, id, item, SemDis_MEAN, top = 1:2, minimal = TRUE)
 mtscr_prepare <- function(df, id_column, item_column, score_column, top = 1, minimal = FALSE) {
   # ensym to make both strings and symbols work
   id_column <- rlang::ensym(id_column)
@@ -131,8 +135,8 @@ mtscr_prepare <- function(df, id_column, item_column, score_column, top = 1, min
         )
       )
   }) |>
-  Reduce(dplyr::full_join, x = _) |>
-  suppressMessages()
+    Reduce(dplyr::full_join, x = _) |>
+    suppressMessages()
 
   if (minimal) {
     df <- df |>

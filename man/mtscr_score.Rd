@@ -9,57 +9,43 @@ mtscr_score(
   id_column,
   item_column,
   score_column,
-  model_type = c("all_max", "all_top2"),
-  summarise_for = "person",
-  format = "minimal_long"
+  top = 1,
+  format = "minimal"
 )
 }
 \arguments{
-\item{df}{Data frame in long format}
+\item{df}{Data frame in long format.}
 
-\item{id_column}{Name of the column containing participants' id}
+\item{id_column}{Name of the column containing participants' id.}
 
-\item{item_column}{Name of the column containing distinct trials (e.g. names of items in AUT)}
+\item{item_column}{Name of the column containing distinct trials (e.g. names of items in AUT).}
 
-\item{score_column}{Name of the column containing divergent thinking scores (e.g. semantic distance)}
+\item{score_column}{Name of the column containing divergent thinking scores
+(e.g. semantic distance).}
 
-\item{model_type}{Character vector, the type of model to fit. Can be \code{all_max}, \code{all_top2} or both.}
-
-\item{summarise_for}{Character, whether to get creativity scores for each person, each item or both.
-Can be \code{"person"}, \code{"item"} or \code{"both"}.}
+\item{top}{Integer or vector of integers (see examples), number of top answers
+to prepare indicators for. Default is 1, i.e. only the top answer.}
 
 \item{format}{Character, controls the format of the output data frame. Accepts:
 \describe{
-\item{\code{"minimal_long"}}{default, returns only the columns important for scoring
-(usually ID, item and scores) in long format.}
-\item{\code{"minimal_wide"}}{returns only the columns important for scoring
-(usually ID, item and scores) in wide format. Works only if \code{summarise_for} is \code{"both"}.}
-\item{\code{"full"}}{returns the original data frame with scores columns added.}
+\item{\code{"minimal"}}{default, returns only the creativity scores and id columns.}
+\item{\code{"full"}}{returns the original data frame with creativity scores columns added.}
 }}
 }
 \value{
-A tibble with creativity scores. If \code{summarise_for} is \code{"person"}, the data frame
-will have one row per person. If \code{summarise_for} is \code{"item"}, the data frame will have one
-row per item. If \code{summarise_for} is \code{"both"}, the format depends on the \code{format} argument.
-If it is \code{"minimal_long"}, the data frame will have one row per person-item combination.
-If it is \code{"minimal_wide"}, the data frame will have one row per person and one column per item.
-
-\strong{Important:} if format is \code{"full"}, the data frame will always be in a long format. This means
-that even though one row in the input data frame represents one creative idea, the score
-in the added columns reflects a collective score for that person, item or person-item combination.
-For example if Kowalski has 3 ideas about the use of a brick, all the rows with the brick ideas
-will have the same score in the added columns – the score for Kowalski's brick ideas. If
-\code{summarise_for} is \code{"person"}, the score will be the same for all Kowalski's ideas.
+A tibble with creativity scores. If \code{format = "full"}, the original data frame is
+returned with scores columns added. Otherwise, only the scores and id columns are returned.
+number of creativity scores columns (e.g. \code{creativity_score_top2}) depends on the \code{top} argument.
 }
 \description{
 Score creativity with MTS
 }
 \examples{
 data("mtscr_creativity", package = "mtscr")
-mtscr_score(mtscr_creativity, id, item, SemDis_MEAN)
+mtscr_score(mtscr_creativity, id, item, SemDis_MEAN, top = 1:2)
 
-# one score for person-item
-mtscr_score(mtscr_creativity, id, item, SemDis_MEAN, summarise_for = "both")
+# add scores to the original data frame
+mtscr_score(mtscr_creativity, id, item, SemDis_MEAN, format = "full")
 }
 \seealso{
 \code{\link[tidyr:pivot_wider]{tidyr::pivot_wider()}} for converting the output to wide format by yourself.

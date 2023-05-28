@@ -9,27 +9,30 @@ mtscr_model(
   id_column,
   item_column,
   score_column,
-  model_type = c("all_max", "all_top2"),
+  top = 1,
   prepared = FALSE
 )
 }
 \arguments{
-\item{df}{Data frame in long format}
+\item{df}{Data frame in long format.}
 
-\item{id_column}{Name of the column containing participants' id}
+\item{id_column}{Name of the column containing participants' id.}
 
-\item{item_column}{Name of the column containing distinct trials (e.g. names of items in AUT)}
+\item{item_column}{Name of the column containing distinct trials (e.g. names of items in AUT).}
 
-\item{score_column}{Name of the column containing divergent thinking scores (e.g. semantic distance)}
+\item{score_column}{Name of the column containing divergent thinking scores
+(e.g. semantic distance).}
 
-\item{model_type}{Character vector, the type of model to fit. Can be \code{all_max}, \code{all_top2} or both.}
+\item{top}{Integer or vector of integers (see examples), number of top answers
+to include in the model. Default is 1, i.e. only the top answer.}
 
 \item{prepared}{Logical, is the data already prepared with \code{mtscr_prepare()}?}
 }
 \value{
-The return value depends on \code{model_type}; if \code{model_type} is a single value,
-the function returns a \code{glmmTMB} model object. If \code{model_type} is a vector of values,
-the function returns a named list of \code{glmmTMB} model objects.
+The return value depends on length of the \code{top} argument. If \code{top} is a single
+integer, a \code{glmmTMB} model is returned. If \code{top} is a vector of integers, a list
+of \code{glmmTMB} models is returned, with names corresponding to the \code{top} values,
+e.g. \code{top1}, \code{top2}, etc.
 }
 \description{
 Create MTS model for creativity analysis.
@@ -37,18 +40,18 @@ Create MTS model for creativity analysis.
 \examples{
 data("mtscr_creativity", package = "mtscr")
 
-mtscr_model(mtscr_creativity, id, item, SemDis_MEAN, model_type = "all_max") |>
+mtscr_model(mtscr_creativity, id, item, SemDis_MEAN) |>
   broom.mixed::tidy() # tidy print, can use `summary()`
 
-mtscr_model(mtscr_creativity, id, item, SemDis_MEAN, model_type = c("all_max", "all_top2")) |>
+# three models for top 1, 2, and 3 answers
+mtscr_model(mtscr_creativity, id, item, SemDis_MEAN, top = 1:3) |>
   lapply(broom.mixed::tidy)
 
 # you can prepare data first
 data <- mtscr_prepare(mtscr_creativity, id, item, SemDis_MEAN)
-mtscr_model(data, id, item, SemDis_MEAN, model_type = "all_max", prepared = TRUE)
+mtscr_model(data, id, item, SemDis_MEAN, prepared = TRUE)
 
-# predict with model
-data <- mtscr_prepare(mtscr_creativity, id, item, SemDis_MEAN, minimal = TRUE)
-model <- mtscr_model(data, id, item, SemDis_MEAN, prepared = TRUE)
-data$creativity_score <- predict(model[["all_max"]], data)
+# extract effects for creativity score by hand
+model <- mtscr_model(mtscr_creativity, id, item, SemDis_MEAN, top = 2, prepared = TRUE)
+data$creativity_score <- glmmTMB::ranef(model)$cond$id[, 1]
 }
