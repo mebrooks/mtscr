@@ -131,7 +131,10 @@ mtscr_prepare <- function(df, id_column, item_column, score_column, top = 1, min
     dplyr::group_by({{ id_column }}, {{ item_column }}) |>
     dplyr::arrange({{ id_column }}, {{ item_column }}, dplyr::desc(.data$.z_score)) |>
     dplyr::mutate(
-      .ordering = rank(-.data$.z_score) - 1 # minus for descending order, -1 to start with 0
+      .ordering = rank(
+        -.data$.z_score, # minus for descending order
+        ties.method = "random"
+      ) - 1 # -1 to start with 0
     )
 
   top <- as.list(top)
