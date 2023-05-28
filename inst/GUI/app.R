@@ -10,7 +10,7 @@ ui <- fluidPage(
     href = "https://fonts.googleapis.com/css?family=Raleway"
   )),
   includeCSS("./www/styles.css"),
-    titlePanel("Multidimentional Top Scoring for Creativity Research"),
+  titlePanel("Multidimentional Top Scoring for Creativity Research"),
   ## Sidebar ----
   sidebarLayout(
     sidebarPanel(
@@ -32,10 +32,8 @@ ui <- fluidPage(
       width = 9,
       fluidRow(
         ### Model info ----
-        uiOutput("all_max_header"),
-        tableOutput("all_max_glance"),
-        uiOutput("all_top2_header"),
-        tableOutput("all_top2_glance"),
+        uiOutput("models_summary_header"),
+        tableOutput("models_summary"),
         ### Loading message ----
         conditionalPanel(
           condition = "$('html').hasClass('shiny-busy')",
@@ -86,8 +84,7 @@ server <- function(input, output, session) {
           dplyr::where(is.numeric)
         )
       )),
-      selectInput("summarise_for", "Summarise for:", choices = c("person", "item", "both")),
-      selectInput("format", "Output format:", choices = c("long", "wide")),
+      sliderInput("top", "Max number of top answers to be included:", value = 1, min = 1, max = 10),
       actionButton("generate_model", "Generate model →")
     )
   })
@@ -99,26 +96,21 @@ server <- function(input, output, session) {
     id_col <- input$id_column
     item_col <- input$item_column
     score_col <- input$score_column
-    model <- mtscr::mtscr_model(data, !!id_col, !!item_col, !!score_col)
-    all_max_summary <- broom.mixed::glance(model[["all_max"]])
-    all_top2_summary <- broom.mixed::glance(model[["all_top2"]])
+    top <- seq(1, input$top)
+    model <- mtscr::mtscr_model(data, !!id_col, !!item_col, !!score_col, top = top)
+    if (length(top) == 1) {
+      model <- list(model)
+    }
+    models_summary <- purrr::map(model, broom.mixed::glance) |>
+      dplyr::bind_rows(.id = "model")
 
     ### Make UI for summaries ----
-    output$all_max_header <- renderUI(tags$b("All Maximum model summary:"))
-    output$all_max_glance <- renderTable(all_max_summary)
-    output$all_top2_header <- renderUI(tags$b("All Top 2 model summary:"))
-    output$all_top2_glance <- renderTable(all_top2_summary)
+    output$models_summary_header <- renderUI(tags$b("Models summary:"))
+    output$models_summary <- renderTable(models_summary)
 
     ### Make UI for scored data ----
-    summarise_for <- input$summarise_for
-
-    format <- dplyr::case_when(
-      input$format == "long" ~ "minimal_long",
-      input$format == "wide" ~ "minimal_wide"
-    )
-
-    scored_data <- mtscr::mtscr_score(data, !!id_col, !!item_col, !!score_col, summarise_for = summarise_for, format = format)
-    scored_data_whole <- mtscr::mtscr_score(data, !!id_col, !!item_col, !!score_col, summarise_for = summarise_for, format = "full")
+    scored_data <- mtscr::mtscr_score(data, !!id_col, !!item_col, !!score_col, top = top, format = "minimal")
+    scored_data_whole <- mtscr::mtscr_score(data, !!id_col, !!item_col, !!score_col, top = top, format = "full")
     output$scored_data_header <- renderUI(tags$b("Scored data:"))
     output$scored_data <- DT::renderDataTable(scored_data,
       extensions = "Buttons",
@@ -144,14 +136,6 @@ server <- function(input, output, session) {
         downloadButton("whole_xlsx", ".xlsx")
       )
     )
-
-    if (input$format == "wide") {
-      output$wide_warning <- renderText(
-        "<br><b>Note:</b> full database is always in long format."
-      )
-    } else {
-      output$wide_warning <- renderText("")
-    }
 
     ## Download handlers ----
     output$scores_csv <- downloadHandler(
