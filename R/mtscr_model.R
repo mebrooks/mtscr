@@ -29,8 +29,8 @@
 #' mtscr_model(data, id, item, SemDis_MEAN, prepared = TRUE)
 #'
 #' # extract effects for creativity score by hand
-#' model <- mtscr_model(mtscr_creativity, id, item, SemDis_MEAN, top = 2, prepared = TRUE)
-#' data$creativity_score <- glmmTMB::ranef(model)$cond$id[, 1]
+#' model <- mtscr_model(mtscr_creativity, id, item, SemDis_MEAN, top = 2)
+#' creativity_score <- glmmTMB::ranef(model)$cond$id[, 1]
 mtscr_model <- function(df, id_column, item_column, score_column, top = 1, prepared = FALSE) {
   id_column <- rlang::ensym(id_column)
   item_column <- rlang::ensym(item_column)
@@ -85,12 +85,22 @@ mtscr_model <- function(df, id_column, item_column, score_column, top = 1, prepa
     )
   }
 
-  # check if top is an integer or a vector of integers
-  if (!identical(top, as.integer(top))) {
+  # check if top is numeric
+  if (!is.numeric(top)) {
     cli::cli_abort(
       c(
         "{.arg top} must be an integer or a vector of integers.",
-        "x" = "{.var {rlang::expr_text(substitute(top))}} is {.obj_type_friendly {top}}"
+        "x" = "{.var {rlang::expr_text(substitute(top))}} is {.cls {class(top)}}"
+      )
+    )
+  }
+
+  # check if top is an integer or a vector of integers
+  if (!any(top == as.integer(top))) {
+    cli::cli_abort(
+      c(
+        "{.arg top} must be an integer or a vector of integers.",
+        "x" = "{.var {rlang::expr_text(substitute(top))}} is not an integer."
       )
     )
   }
@@ -133,7 +143,7 @@ mtscr_model <- function(df, id_column, item_column, score_column, top = 1, prepa
     ordering_columns,
     \(x) {
       c(
-        as.formula(
+        stats::as.formula(
           paste0(
             ".z_score ~ -1 + ",
             rlang::as_name(item_column),

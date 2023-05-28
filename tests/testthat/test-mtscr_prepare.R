@@ -14,8 +14,8 @@ test_that("mtscr_prepare returns a tibble", {
 
 # Test that the function adds the expected columns
 test_that("mtscr_prepare adds the expected columns", {
-  result <- mtscr_prepare(df, id, item, score)
-  expect_named(result, c(names(df), ".z_score", ".max_ind", ".top2_ind", ".ordering", ".ordering_0", ".ordering_top2_0"), ignore.order = TRUE)
+  result <- mtscr_prepare(df, id, item, score, top = 1:2)
+  expect_named(result, c(names(df), ".z_score", ".ordering", ".ordering_top1", ".ordering_top2"), ignore.order = TRUE)
 })
 
 # Test that the function returns the expected number of rows
@@ -79,22 +79,31 @@ test_that("minimal argument works as expected", {
   res_full <- mtscr_prepare(df, id, item, score, minimal = FALSE)
 
   # check that res_minimal has only the additional columns
-  expect_equal(ncol(res_minimal), 8)
+  expect_equal(ncol(res_minimal), 5)
   expect_true(".z_score" %in% colnames(res_minimal))
   expect_true(".ordering" %in% colnames(res_minimal))
-  expect_true(".max_ind" %in% colnames(res_minimal))
-  expect_true(".top2_ind" %in% colnames(res_minimal))
+  expect_true(".ordering_top1" %in% colnames(res_minimal))
 
   # check that res_full has the additional columns
-  expect_equal(ncol(res_full), 9)
+  expect_equal(ncol(res_full), ncol(df) + 3)
   expect_true(".z_score" %in% colnames(res_full))
   expect_true(".ordering" %in% colnames(res_full))
-  expect_true(".max_ind" %in% colnames(res_full))
-  expect_true(".top2_ind" %in% colnames(res_full))
+  expect_true(".ordering_top1" %in% colnames(res_full))
 
   # check that res_minimal and res_full have the same values for the additional columns
   expect_equal(res_minimal$.z_score, res_full$.z_score)
-  expect_equal(res_minimal$.max_ind, res_full$.max_ind)
-  expect_equal(res_minimal$.top2_ind, res_full$.top2_ind)
   expect_equal(res_minimal$.ordering, res_full$.ordering)
+  expect_equal(res_minimal$.ordering_top1, res_full$.ordering_top1)
+})
+
+# Test that top argument must be integer
+test_that("top argument must be an integer", {
+  # call function with top = "yes."
+  expect_error(mtscr_prepare(df, id, item, score, top = "yes."), regexp = "must be an integer")
+
+  # call function with top = 1.5
+  expect_error(mtscr_prepare(df, id, item, score, top = 1.5), regexp = "must be an integer")
+
+  # call function with top = -2
+  expect_error(mtscr_prepare(df, id, item, score, top = -2), regexp = "positive integer")
 })

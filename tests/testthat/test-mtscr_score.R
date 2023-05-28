@@ -1,158 +1,125 @@
 data("mtscr_creativity", package = "mtscr")
 
-# Test that `model_type` argument throws an error when invalid values are provided
-test_that("model_type argument throws an error when invalid values are provided", {
-  # call function with model_type = "invalid"
-  expect_error(mtscr_score(mtscr_creativity, id, item, SemDis_MEAN, model_type = "invalid"))
-
-  # call function with model_type = c("all_max", "invalid")
-  expect_error(mtscr_score(mtscr_creativity, id, item, SemDis_MEAN, model_type = c("all_max", "invalid")))
-})
-
-# Test that `summarise_for` argument works as expected
-# person
-test_that("summarise_for argument works as expected for person", {
-  # call function with summarise_for = "person"
-  res_person <- mtscr_score(mtscr_creativity, id, item, SemDis_MEAN, model_type = "all_max", summarise_for = "person")
-
-  # check that res_person has the expected number of rows and columns
-  expect_equal(ncol(res_person), 2)
-
-  # check that res_person has the expected column names
-  expect_equal(colnames(res_person), c("id", ".all_max"))
-})
-
-# item
-test_that("summarise_for argument works as expected for item", {
-  # call function with summarise_for = "item"
-  res_item <- mtscr_score(mtscr_creativity, id, item, SemDis_MEAN, model_type = "all_top2", summarise_for = "item")
-
-  # check that res_item has the expected number of rows and columns
-  expect_equal(ncol(res_item), 2)
-
-  # check that res_item has the expected column names
-  expect_equal(colnames(res_item), c("item", ".all_top2"))
-})
-
-# both
-test_that("summarise_for argument works as expected for both", {
-  # call function with summarise_for = "both"
-  res_both <- mtscr_score(mtscr_creativity, id, item, SemDis_MEAN, model_type = c("all_max", "all_top2"), summarise_for = "both")
-
-  # check that res_both has the expected number of rows and columns
-  expect_equal(ncol(res_both), 4)
-
-  # check that res_both has the expected column names
-  expect_equal(colnames(res_both), c("id", "item", ".all_max", ".all_top2"))
-})
-
-# invalid
-test_that("summarise_for argument throws an error when invalid values are provided", {
-  # call function with summarise_for = "invalid"
-  expect_error(mtscr_score(mtscr_creativity, id, item, SemDis_MEAN, model_type = "all_max", summarise_for = "invalid"))
-
-  # call function with summarise_for = c("person", "invalid")
-  expect_error(mtscr_score(mtscr_creativity, id, item, SemDis_MEAN, model_type = "all_max", summarise_for = c("person", "invalid")))
-})
-
 # Test that `format` argument works as expected
-# minimal_long
-test_that("format argument works as expected for long", {
-  # call function with format = "long"
-  res_long <- mtscr_score(mtscr_creativity, id, item, SemDis_MEAN, model_type = "all_max", summarise_for = "both", format = "minimal_long")
+# full
+test_that("format argument works as expected for full", {
+  # call function with format = "full"
+  res_full <- mtscr_score(mtscr_creativity, id, item, SemDis_MEAN, top = 1:3, format = "full")
 
-  # check that res_long has the expected number of rows and columns
-  expect_equal(ncol(res_long), 3)
+  # check that res_full has the expected number of rows and columns
+  expect_equal(ncol(res_full), ncol(mtscr_creativity) + 3)
 
-  # check that res_long has the expected column names
-  expect_named(res_long, c("id", "item", ".all_max"))
-})
-# minimal_wide, one model
-test_that("format argument works as expected for wide and one model", {
-  # call function with format = "wide"
-  res_wide <- mtscr_score(mtscr_creativity, id, item, SemDis_MEAN, model_type = "all_top2", summarise_for = "both", format = "minimal_wide")
-
-  # check that res_wide has the expected number of rows and columns
-  expect_equal(ncol(res_wide), 14)
-
-  # check that res_wide has the expected column names
-  expect_named(res_wide, c("id", unique(mtscr_creativity$item)), ignore.order = TRUE)
+  # check that res_full has the expected column names
+  expect_named(res_full, c(names(mtscr_creativity), paste0(".creativity_score_top", 1:3)), ignore.order = TRUE)
 })
 
-# minimal_wide, two models
-test_that("format argument works as expected for wide and two models", {
-  # call function with format = "wide"
-  res_wide <- mtscr_score(mtscr_creativity, id, item, SemDis_MEAN, model_type = c("all_max", "all_top2"), summarise_for = "both", format = "minimal_wide")
+# minimal
+test_that("format argument works as expected for minimal", {
+  # call function with format = "minimal"
+  res_minimal <- mtscr_score(mtscr_creativity, id, item, SemDis_MEAN, top = 1:3, format = "minimal")
 
   # check that res_wide has the expected number of rows and columns
-  expect_equal(ncol(res_wide), 27)
+  expect_equal(ncol(res_minimal), 4)
 
   # check that res_wide has the expected column names
   expect_named(
-    res_wide, c(
-      "id",
-      paste0(".all_max_", unique(mtscr_creativity$item)),
-      paste0(".all_top2_", unique(mtscr_creativity$item))
-    ),
+    res_minimal, c("id", paste0(".creativity_score_top", 1:3)),
     ignore.order = TRUE
   )
 })
 
-# full
-test_that("format argument works as expected for full", {
-  # call function with format = "full"
-  res_full <- mtscr_score(mtscr_creativity, id, item, SemDis_MEAN, summarise_for = "both", format = "full")
+# Test that .creativity_score columns are numeric
+test_that(".creativity_score columns are numeric", {
+  # call function with top = 1
+  res_top1 <- mtscr_score(mtscr_creativity, id, item, SemDis_MEAN, top = 1)
 
-  # check that res_full has the expected number of rows and columns
-  expect_equal(ncol(res_full), 12)
-
-  # check that res_full has the expected column names
-  expect_named(res_full, c(names(mtscr_creativity), ".all_max", ".all_top2"))
-})
-
-# Test that .all_max and .all_top2 columns are numeric
-test_that(".all_max and .all_top2 columns are numeric", {
-  # call function with model_type = "all_max"
-  res_all_max <- mtscr_score(mtscr_creativity, id, item, SemDis_MEAN, model_type = "all_max")
-
-  # check that .all_max column is numeric
-  expect_type(res_all_max$.all_max, "double")
+  # check that .creativity_score_top1 column is numeric
+  expect_type(res_top1$.creativity_score_top1, "double")
 
   # check that variance isn't 0
-  expect_false(var(res_all_max$.all_max) == 0)
+  expect_false(var(res_top1$.creativity_score_top1) == 0)
 
-  # call function with model_type = "all_top2"
-  res_all_top2 <- mtscr_score(mtscr_creativity, id, item, SemDis_MEAN, model_type = "all_top2")
+  # call function with top = 1:3
+  res_top1to3 <- mtscr_score(mtscr_creativity, id, item, SemDis_MEAN, top = 1:3)
 
-  # check that .all_top2 column is numeric
-  expect_type(res_all_top2$.all_top2, "double")
+  # check that .creativity_score_topX columns are numeric
+  expect_type(res_top1to3$.creativity_score_top1, "double")
+  expect_type(res_top1to3$.creativity_score_top2, "double")
+  expect_type(res_top1to3$.creativity_score_top3, "double")
 
   # check that variance isn't 0
-  expect_false(var(res_all_top2$.all_top2) == 0)
+  expect_false(var(res_top1to3$.creativity_score_top1) == 0)
+  expect_false(var(res_top1to3$.creativity_score_top2) == 0)
+  expect_false(var(res_top1to3$.creativity_score_top3) == 0)
 })
 
-# Test that invalid summarise_for errors are thrown
-test_that("invalid summarise_for error is thrown", {
-  # call function with summarise_for = "invalid"
-  expect_error(mtscr_score(mtscr_creativity, id, item, SemDis_MEAN, model_type = "all_max", summarise_for = "invalid"))
-
-  # call function with summarise_for = c("person", "both")
-  expect_error(mtscr_score(mtscr_creativity, id, item, SemDis_MEAN, model_type = "all_max", summarise_for = c("person", "both")))
-})
+df <- data.frame(
+  id = rep(1:2, each = 9),
+  item = rep(letters[1:3], 2, each = 3),
+  score = runif(18, 0, 1)
+)
 
 # Test that invalid format errors are thrown
 test_that("invalid format error is thrown", {
   # call function with format = "invalid"
-  expect_error(mtscr_score(mtscr_creativity, id, item, SemDis_MEAN, model_type = "all_max", format = "invalid"))
+  expect_error(mtscr_score(mtscr_creativity, id, item, SemDis_MEAN, format = "invalid"))
 
-  # call function with format = c("minimal_long", "full")
-  expect_error(mtscr_score(mtscr_creativity, id, item, SemDis_MEAN, model_type = "all_max", format = c("minimal_long", "full")))
+  # call function with format = c("minimal", "full")
+  expect_error(mtscr_score(mtscr_creativity, id, item, SemDis_MEAN, format = c("minimal", "full")))
 })
 
-# Test for message if format is minimal_wide and summarise_for is not both
-test_that("message is thrown if format is minimal_wide and summarise_for is not both", {
-  # call function with format = "minimal_wide" and summarise_for = "person"
-  expect_message(
-    mtscr_score(mtscr_creativity, id, item, SemDis_MEAN, model_type = "all_max", summarise_for = "person", format = "minimal_wide"),
-    regexp = "summarise_for = \"both\"")
+# Test that top argument must be integer
+test_that("top argument must be an integer", {
+
+  # call function with top = "yes."
+  expect_error(mtscr_score(mtscr_creativity, id, item, SemDis_MEAN, top = "yes."), regexp = "must be an integer")
+
+  # call function with top = 1.5
+  expect_error(mtscr_score(mtscr_creativity, id, item, SemDis_MEAN, top = 1.5), regexp = "must be an integer")
+
+  # call function with top = -2
+  expect_error(mtscr_score(mtscr_creativity, id, item, SemDis_MEAN, top = -2), regexp = "positive integer")
+})
+
+# Test that df must be a data frame
+test_that("df must be a data frame", {
+  # call function with a vector
+  expect_error(mtscr_score(1:10, id, item, score), regexp = "must be a data frame.")
+})
+
+# Test that all columns exist in the data
+# id_column
+test_that("id_column must exist in the data", {
+  # create a test data frame without the id column
+  df_no_id <- df[, c("item", "score")]
+
+  # call function with test data frame and no id column
+  expect_error(mtscr_score(df_no_id, id, item, score), regexp = "does not exist.")
+})
+
+# item_column
+test_that("item_column must exist in the data", {
+  # create a test data frame without the item column
+  df_no_item <- df[, c("id", "score")]
+
+  # call function with test data frame and no item column
+  expect_error(mtscr_score(df_no_item, id, item, score), regexp = "does not exist.")
+})
+
+# score_column
+test_that("score_column must exist in the data", {
+  # create a test data frame without the score column
+  df_no_score <- df[, c("id", "item")]
+
+  # call function with test data frame and no score column
+  expect_error(mtscr_score(df_no_score, id, item, score), regexp = "does not exist.")
+})
+
+# Test that score_column must be numeric
+test_that("score_column must be numeric", {
+  # create a test data frame with a non-numeric value column
+  df_string_scores <- data.frame(id = c(1, 2), item = c("apple", "banana"), value = c("red", "yellow"))
+
+  # call function with test data frame and non-numeric value column
+  expect_error(mtscr_score(df_string_scores, id, item, value), regexp = "must be numeric.")
 })

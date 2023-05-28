@@ -93,12 +93,22 @@ mtscr_prepare <- function(df, id_column, item_column, score_column, top = 1, min
     )
   }
 
-  # check if top is an integer or a vector of integers
-  if (!identical(top, as.integer(top))) {
+  # check if top is numeric
+  if (!is.numeric(top)) {
     cli::cli_abort(
       c(
         "{.arg top} must be an integer or a vector of integers.",
-        "x" = "{.var {rlang::expr_text(substitute(top))}} is {.obj_type_friendly {top}}"
+        "x" = "{.var {rlang::expr_text(substitute(top))}} is {.cls {class(top)}}"
+      )
+    )
+  }
+
+  # check if top is an integer or a vector of integers
+  if (!any(top == as.integer(top))) {
+    cli::cli_abort(
+      c(
+        "{.arg top} must be an integer or a vector of integers.",
+        "x" = "{.var {rlang::expr_text(substitute(top))}} is not an integer."
       )
     )
   }

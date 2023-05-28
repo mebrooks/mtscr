@@ -52,6 +52,6 @@ data <- mtscr_prepare(mtscr_creativity, id, item, SemDis_MEAN)
 mtscr_model(data, id, item, SemDis_MEAN, prepared = TRUE)
 
 # extract effects for creativity score by hand
-model <- mtscr_model(mtscr_creativity, id, item, SemDis_MEAN, top = 2, prepared = TRUE)
-data$creativity_score <- glmmTMB::ranef(model)$cond$id[, 1]
+model <- mtscr_model(mtscr_creativity, id, item, SemDis_MEAN, top = 2)
+creativity_score <- glmmTMB::ranef(model)$cond$id[, 1]
 }

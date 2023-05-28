@@ -8,3 +8,4 @@
 ^README\.Rmd$
 ^\.lintr$
 ^\.covrignore$
+^\.vscode$

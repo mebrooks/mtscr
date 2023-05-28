@@ -56,11 +56,10 @@ Imports:
     glue,
     lifecycle,
     purrr,
+    readr,
     rlang (>= 0.4.11),
     shiny,
-    stringr,
-    tibble,
-    tidyr
+    tibble
 Suggests: 
     broom.mixed,
     covr,

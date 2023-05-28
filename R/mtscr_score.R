@@ -77,12 +77,22 @@ mtscr_score <- function(df, id_column, item_column, score_column, top = 1, forma
     )
   }
 
-  # check if top is an integer or a vector of integers
-  if (!identical(top, as.integer(top))) {
+  # check if top is numeric
+  if (!is.numeric(top)) {
     cli::cli_abort(
       c(
         "{.arg top} must be an integer or a vector of integers.",
-        "x" = "{.var {rlang::expr_text(substitute(top))}} is {.obj_type_friendly {top}}"
+        "x" = "{.var {rlang::expr_text(substitute(top))}} is {.cls {class(top)}}"
+      )
+    )
+  }
+
+  # check if top is an integer or a vector of integers
+  if (!any(top == as.integer(top))) {
+    cli::cli_abort(
+      c(
+        "{.arg top} must be an integer or a vector of integers.",
+        "x" = "{.var {rlang::expr_text(substitute(top))}} is not an integer."
       )
     )
   }
@@ -97,18 +107,32 @@ mtscr_score <- function(df, id_column, item_column, score_column, top = 1, forma
     )
   }
 
+  # check that format is either "minimal" or "full"
+  if (!format %in% c("minimal", "full")) {
+    cli::cli_abort(
+      c(
+        "{.arg format} must be either \"minimal\" or \"full\".",
+        "x" = "{.var {rlang::expr_text(substitute(format))}} is invalid."
+      )
+    )
+  }
+
   # prepare
   df <- mtscr_prepare(df, !!id_column, !!item_column, !!score_column, top = top, minimal = FALSE)
   model <- mtscr_model(df, !!id_column, !!item_column, !!score_column, top = top, prepared = TRUE)
+
+  if (length(top) == 1) {
+    model <- list(model)
+  }
 
   # score
   df <- purrr::map2(
     model,
     top,
-    \(model, top_number) {
+    \(current_model, top_number) {
       col_name <- paste0(".creativity_score_top", top_number)
 
-      glmmTMB::ranef(model)$cond$id |>
+      glmmTMB::ranef(current_model)$cond$id |>
         dplyr::as_tibble(rownames = "id") |>
         dplyr::select("id", !!col_name := "(Intercept)")
     }
