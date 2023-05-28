@@ -32,5 +32,5 @@ and the first difference of the empirical reliability.
 \examples{
 data("mtscr_creativity", package = "mtscr")
 mtscr_model(mtscr_creativity, id, item, SemDis_MEAN, top = 1:3) |>
-    mtscr_model_summary()
+  mtscr_model_summary()
 }
