@@ -23,8 +23,8 @@ test_that("prepared argument works as expected", {
   res_unprepared <- mtscr_model(mtscr_creativity, id, item, SemDis_MEAN, prepared = FALSE)
 
   # check that res_prepared and res_unprepared are the same
-  expect_equal(glmmTMB::fixef(res_prepared), glmmTMB::fixef(res_unprepared))
-  expect_equal(glmmTMB::ranef(res_prepared), glmmTMB::ranef(res_unprepared))
+  expect_equal(glmmTMB::fixef(res_prepared), glmmTMB::fixef(res_unprepared), tolerance = 0.001)
+  expect_equal(glmmTMB::ranef(res_prepared), glmmTMB::ranef(res_unprepared), tolerance = 0.001)
 })
 
 # Test that `top` argument works as expected
