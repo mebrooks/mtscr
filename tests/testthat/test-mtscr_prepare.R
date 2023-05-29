@@ -107,3 +107,18 @@ test_that("top argument must be an integer", {
   # call function with top = -2
   expect_error(mtscr_prepare(df, id, item, score, top = -2), regexp = "positive integer")
 })
+
+# Test that there's a message when data is grouped
+test_that("there's a message when data is grouped", {
+  # call function with groupped data
+  expect_message(mtscr_prepare(dplyr::group_by(df, item), id, item, score))
+})
+
+# Test that result is ungrouped
+test_that("result is ungrouped", {
+  # call function with grouped data
+  result <- mtscr_prepare(dplyr::group_by(df, item), id, item, score)
+
+  # check that result is ungrouped
+  expect_false(dplyr::is_grouped_df(result))
+})

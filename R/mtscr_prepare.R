@@ -123,6 +123,15 @@ mtscr_prepare <- function(df, id_column, item_column, score_column, top = 1, min
     )
   }
 
+  if (dplyr::is.grouped_df(df)) {
+    cli::cli_inform(
+      c(
+        "Data must not be grouped.",
+        "i" = "It has been ungrouped."
+      )
+    )
+    df <- dplyr::ungroup(df)
+  }
 
   df <- df |>
     dplyr::mutate(df,
@@ -149,7 +158,8 @@ mtscr_prepare <- function(df, id_column, item_column, score_column, top = 1, min
       )
   }) |>
     Reduce(dplyr::full_join, x = _) |>
-    suppressMessages()
+    suppressMessages() |> # suppress info about joining by
+    dplyr::ungroup()
 
   if (minimal) {
     df <- df |>
