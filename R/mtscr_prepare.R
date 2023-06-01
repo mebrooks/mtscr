@@ -4,7 +4,8 @@
 #'
 #' @param df Data frame in long format.
 #' @param id_column Name of the column containing participants' id.
-#' @param item_column Name of the column containing distinct trials (e.g. names of items in AUT).
+#' @param item_column Optional, name of the column containing distinct trials
+#'     (e.g. names of items in AUT).
 #' @param score_column Name of the column containing divergent thinking scores
 #'     (e.g. semantic distance).
 #' @param top Integer or vector of integers (see examples), number of top answers
@@ -31,10 +32,14 @@
 #' data("mtscr_creativity", package = "mtscr")
 #' # Indicators for top 1 and top 2 answers
 #' mtscr_prepare(mtscr_creativity, id, item, SemDis_MEAN, top = 1:2, minimal = TRUE)
-mtscr_prepare <- function(df, id_column, item_column, score_column, top = 1, minimal = FALSE, ties_method = "random") {
-  # ensym to make both strings and symbols work
+mtscr_prepare <- function(df, id_column, item_column = NULL, score_column, top = 1, minimal = FALSE, ties_method = "random") {
   id_column <- rlang::ensym(id_column)
-  item_column <- rlang::ensym(item_column)
+  item_column_quo <- rlang::enquo(item_column)
+  if (!rlang::quo_is_null(item_column_quo)) {
+    item_column <- rlang::ensym(item_column)
+  } else {
+    item_column <- item_column_quo
+  }
   score_column <- rlang::ensym(score_column)
 
   # check if df is a data frame
@@ -57,24 +62,26 @@ mtscr_prepare <- function(df, id_column, item_column, score_column, top = 1, min
       )
     )
   }
-  if (!rlang::has_name(df, rlang::as_name(item_column))) {
-    cli::cli_abort(
-      c(
-        "All columns must exist in the data.",
-        "x" = "Column {.var {item_column}} does not exist.",
-        "i" = "Check the spelling."
+  if(!rlang::quo_is_null(item_column_quo)) {
+    if (!rlang::has_name(df, rlang::as_name(item_column))) {
+      cli::cli_abort(
+        c(
+          "All columns must exist in the data.",
+          "x" = "Column {.var {item_column}} does not exist.",
+          "i" = "Check the spelling."
+        )
       )
-    )
+    }
   }
-  if (!rlang::has_name(df, rlang::as_name(score_column))) {
-    cli::cli_abort(
-      c(
-        "All columns must exist in the data.",
-        "x" = "Column {.var {score_column}} does not exist.",
-        "i" = "Check the spelling."
+    if (!rlang::has_name(df, rlang::as_name(score_column))) {
+      cli::cli_abort(
+        c(
+          "All columns must exist in the data.",
+          "x" = "Column {.var {score_column}} does not exist.",
+          "i" = "Check the spelling."
+        )
       )
-    )
-  }
+    }
 
   # check if score_column is numeric
   if (!is.numeric(df[[rlang::as_name(score_column)]])) {
@@ -149,15 +156,26 @@ mtscr_prepare <- function(df, id_column, item_column, score_column, top = 1, min
   df <- df |>
     dplyr::mutate(df,
       .z_score = as.vector(scale({{ score_column }}))
-    ) |>
-    dplyr::group_by({{ id_column }}, {{ item_column }}) |>
-    dplyr::arrange({{ id_column }}, {{ item_column }}, dplyr::desc(.data$.z_score)) |>
-    dplyr::mutate(
-      .ordering = rank(
-        -.data$.z_score, # minus for descending order
-        ties.method = ties_method
-      ) - 1 # -1 to start with 0
     )
+
+  if (!rlang::quo_is_null(item_column_quo)) {
+    df <- df |>
+      dplyr::group_by({{ id_column }}, {{ item_column }})
+  } else {
+    df <- df |>
+      dplyr::group_by({{ id_column }})
+  }
+
+  df <- df |>
+    dplyr::arrange({{ id_column }}, {{ item_column }}, dplyr::desc(.data$.z_score))
+
+  df <- df |>
+    dplyr::mutate(
+    .ordering = rank(
+      -.data$.z_score, # minus for descending order
+      ties.method = ties_method
+    ) - 1 # -1 to start with 0
+  )
 
   top <- as.list(top)
 

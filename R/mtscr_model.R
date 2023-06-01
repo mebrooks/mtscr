@@ -31,9 +31,14 @@
 #' # extract effects for creativity score by hand
 #' model <- mtscr_model(mtscr_creativity, id, item, SemDis_MEAN, top = 2)
 #' creativity_score <- glmmTMB::ranef(model)$cond$id[, 1]
-mtscr_model <- function(df, id_column, item_column, score_column, top = 1, prepared = FALSE, ties_method = "random") {
+mtscr_model <- function(df, id_column, item_column = NULL, score_column, top = 1, prepared = FALSE, ties_method = "random") {
   id_column <- rlang::ensym(id_column)
-  item_column <- rlang::ensym(item_column)
+  item_column_quo <- rlang::enquo(item_column)
+  if (!rlang::quo_is_null(item_column_quo)) {
+    item_column <- rlang::ensym(item_column)
+  } else {
+    item_column <- item_column_quo
+  }
   score_column <- rlang::ensym(score_column)
 
   # check if all .ordering_X columns exist
@@ -57,7 +62,11 @@ mtscr_model <- function(df, id_column, item_column, score_column, top = 1, prepa
   if (!prepared) {
     df <- mtscr_prepare(df, !!id_column, !!item_column, !!score_column, top = top, minimal = TRUE, ties_method = ties_method)
   }
-  n_items <- length(unique(df[[rlang::as_label(item_column)]])) # number of unique items
+  if (!rlang::quo_is_null(item_column_quo)) {
+    n_items <- length(unique(df[[rlang::as_label(item_column)]])) # number of unique items
+  } else {
+    n_items <- 1
+  }
 
   # create formulas
   # formula example: .z_score ~ -1 + item + item:.ordering_topX + (.ordering_topX | id)

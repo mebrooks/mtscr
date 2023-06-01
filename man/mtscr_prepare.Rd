@@ -7,7 +7,7 @@
 mtscr_prepare(
   df,
   id_column,
-  item_column,
+  item_column = NULL,
   score_column,
   top = 1,
   minimal = FALSE,
@@ -19,7 +19,8 @@ mtscr_prepare(
 
 \item{id_column}{Name of the column containing participants' id.}
 
-\item{item_column}{Name of the column containing distinct trials (e.g. names of items in AUT).}
+\item{item_column}{Optional, name of the column containing distinct trials
+(e.g. names of items in AUT).}
 
 \item{score_column}{Name of the column containing divergent thinking scores
 (e.g. semantic distance).}

@@ -74,7 +74,7 @@ server <- function(input, output, session) {
     list(
       br(),
       selectInput("id_column", "Select ID column:", choices = colnames(imported$data())),
-      selectInput("item_column", "Select item column:", choices = colnames(imported$data())),
+      selectInput("item_column", "Select item column:", choices = c("no item column", colnames(imported$data()))),
       selectInput("score_column", "Select score column:", choices = colnames(
         dplyr::select(
           imported$data(),
@@ -92,7 +92,11 @@ server <- function(input, output, session) {
     ### Create model ----
     data <- imported$data()
     id_col <- input$id_column
-    item_col <- input$item_column
+    if (input$item_column == "no item column") {
+      item_col <- NULL
+    } else {
+      item_col <- input$item_column
+    }
     score_col <- input$score_column
     ties_method <- ifelse(input$ties_method == "random (better for ratings)", "random", "average")
     top <- seq(1, input$top)

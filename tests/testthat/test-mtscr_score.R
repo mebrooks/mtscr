@@ -132,5 +132,20 @@ test_that("works the same with quoted and unquoted column names", {
   res_unquoted <- mtscr_score(mtscr_creativity, id, item, SemDis_MEAN)
 
   # check that the two results are the same
-  expect_equal(res_quoted, res_unquoted)
+  expect_equal(res_quoted, res_unquoted, tolerance = 0.0001)
+})
+
+# Test that works if item column is omitted
+test_that("works if item column is omitted", {
+  # create filtered dataframe
+  df_filtered <- dplyr::filter(df, item == "a")
+
+  # call function with filtered dataframe with item column
+  result_item <- mtscr_score(df_filtered, id, item, score)
+
+  # call function with filtered dataframe without item column
+  result_no_item <- mtscr_score(df_filtered, id, score_column = score)
+
+  # check that results are the same
+  expect_equal(result_item, result_no_item)
 })

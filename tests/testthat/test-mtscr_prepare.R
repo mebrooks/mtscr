@@ -153,3 +153,18 @@ test_that("works the same with quoted and unquoted column names", {
   # check that results are the same
   expect_equal(result_quoted, result_unquoted)
 })
+
+# Test that works if item column is omitted
+test_that("works if item column is omitted", {
+  # create filtered dataframe
+  df_filtered <- dplyr::filter(df, item == "a")
+
+  # call function with filtered dataframe with item column
+  result_item <- mtscr_prepare(df_filtered, id, item, score)
+
+  # call function with filtered dataframe without item column
+  result_no_item <- mtscr_prepare(df_filtered, id, score_column = score)
+
+  # check that results are the same
+  expect_equal(result_item, result_no_item)
+})
