@@ -138,3 +138,15 @@ test_that("no error when there's only one item type", {
   # call function with test data frame
   expect_no_error(mtscr_model(df_one_item, id, item, score))
 })
+
+# Test that works the same with quoted and unquoted column names
+test_that("works the same with quoted and unquoted column names", {
+  # call function with quoted column names
+  res_quoted <- mtscr_model(mtscr_creativity, "id", "item", "SemDis_MEAN")
+
+  # call function with unquoted column names
+  res_unquoted <- mtscr_model(mtscr_creativity, id, item, SemDis_MEAN)
+
+  # check that the two results are the same
+  expect_equal(glmmTMB::ranef(res_quoted), glmmTMB::ranef(res_unquoted))
+})

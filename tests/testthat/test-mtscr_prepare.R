@@ -141,3 +141,15 @@ test_that("NA values from score_column are removed", {
   # check that result has no NA values in the score column
   expect_false(any(is.na(result$score)))
 })
+
+# Test that works the same with quoted and unquoted column names
+test_that("works the same with quoted and unquoted column names", {
+  # call function with quoted column names
+  result_quoted <- mtscr_prepare(df, "id", "item", "score")
+
+  # call function with unquoted column names
+  result_unquoted <- mtscr_prepare(df, id, item, score)
+
+  # check that results are the same
+  expect_equal(result_quoted, result_unquoted)
+})

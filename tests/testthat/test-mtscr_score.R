@@ -122,3 +122,15 @@ test_that("score_column must be numeric", {
   # call function with test data frame and non-numeric value column
   expect_error(mtscr_score(df_string_scores, id, item, value), regexp = "must be numeric.")
 })
+
+# Test that works the same with quoted and unquoted column names
+test_that("works the same with quoted and unquoted column names", {
+  # call function with quoted column names
+  res_quoted <- mtscr_score(mtscr_creativity, "id", "item", "SemDis_MEAN")
+
+  # call function with unquoted column names
+  res_unquoted <- mtscr_score(mtscr_creativity, id, item, SemDis_MEAN)
+
+  # check that the two results are the same
+  expect_equal(res_quoted, res_unquoted)
+})
