@@ -81,6 +81,7 @@ server <- function(input, output, session) {
           dplyr::where(is.numeric)
         )
       )),
+      selectInput("ties_method", "Select ties method", choices = c("random (better for ratings)", "average (better for continous scores)")),
       sliderInput("top", "Max number of top answers to be included:", value = 1, min = 1, max = 10),
       actionButton("generate_model", "Generate model →")
     )
@@ -93,8 +94,9 @@ server <- function(input, output, session) {
     id_col <- input$id_column
     item_col <- input$item_column
     score_col <- input$score_column
+    ties_method <- ifelse(input$ties_method == "random (better for ratings)", "random", "average")
     top <- seq(1, input$top)
-    model <- mtscr::mtscr_model(data, !!id_col, !!item_col, !!score_col, top = top)
+    model <- mtscr::mtscr_model(data, !!id_col, !!item_col, !!score_col, top = top, ties_method = ties_method)
     if (length(top) == 1) {
       model <- list(model)
     }
@@ -105,8 +107,8 @@ server <- function(input, output, session) {
     output$models_summary <- renderTable(models_summary)
 
     ### Make UI for scored data ----
-    scored_data <- mtscr::mtscr_score(data, !!id_col, !!item_col, !!score_col, top = top, format = "minimal")
-    scored_data_whole <- mtscr::mtscr_score(data, !!id_col, !!item_col, !!score_col, top = top, format = "full")
+    scored_data <- mtscr::mtscr_score(data, !!id_col, !!item_col, !!score_col, top = top, format = "minimal", ties_method = ties_method)
+    scored_data_whole <- mtscr::mtscr_score(data, !!id_col, !!item_col, !!score_col, top = top, format = "full", ties_method = ties_method)
     output$scored_data_header <- renderUI(tags$b("Scored data:"))
     output$scored_data <- DT::renderDataTable(
       scored_data,

@@ -11,6 +11,9 @@
 #'     to prepare indicators for. Default is 1, i.e. only the top answer.
 #' @param minimal Logical, append columns to df (`FALSE`) or return only `id`, `item`,
 #'     and the new columns (`TRUE`).
+#' @param ties_method Character string specifying how ties are treated when
+#'     ordering. Can be `"average"` (better for continous scores like semantic
+#'     distance) or `"random"` (default, better for ratings). See [rank()] for details.
 #'
 #' @return The input data frame with additional columns:
 #'     \describe{
@@ -28,7 +31,7 @@
 #' data("mtscr_creativity", package = "mtscr")
 #' # Indicators for top 1 and top 2 answers
 #' mtscr_prepare(mtscr_creativity, id, item, SemDis_MEAN, top = 1:2, minimal = TRUE)
-mtscr_prepare <- function(df, id_column, item_column, score_column, top = 1, minimal = FALSE) {
+mtscr_prepare <- function(df, id_column, item_column, score_column, top = 1, minimal = FALSE, ties_method = "random") {
   # ensym to make both strings and symbols work
   id_column <- rlang::ensym(id_column)
   item_column <- rlang::ensym(item_column)
@@ -152,7 +155,7 @@ mtscr_prepare <- function(df, id_column, item_column, score_column, top = 1, min
     dplyr::mutate(
       .ordering = rank(
         -.data$.z_score, # minus for descending order
-        ties.method = "random"
+        ties.method = ties_method
       ) - 1 # -1 to start with 0
     )
 

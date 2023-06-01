@@ -10,7 +10,8 @@ mtscr_score(
   item_column,
   score_column,
   top = 1,
-  format = "minimal"
+  format = "minimal",
+  ties_method = "random"
 )
 }
 \arguments{
@@ -31,6 +32,10 @@ to prepare indicators for. Default is 1, i.e. only the top answer.}
 \item{\code{"minimal"}}{default, returns only the creativity scores and id columns.}
 \item{\code{"full"}}{returns the original data frame with creativity scores columns added.}
 }}
+
+\item{ties_method}{Character string specifying how ties are treated when
+ordering. Can be \code{"average"} (better for continous scores like semantic
+distance) or \code{"random"} (default, better for ratings). See \code{\link[=rank]{rank()}} for details.}
 }
 \value{
 A tibble with creativity scores. If \code{format = "full"}, the original data frame is

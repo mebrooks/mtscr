@@ -10,7 +10,8 @@ mtscr_prepare(
   item_column,
   score_column,
   top = 1,
-  minimal = FALSE
+  minimal = FALSE,
+  ties_method = "random"
 )
 }
 \arguments{
@@ -28,6 +29,10 @@ to prepare indicators for. Default is 1, i.e. only the top answer.}
 
 \item{minimal}{Logical, append columns to df (\code{FALSE}) or return only \code{id}, \code{item},
 and the new columns (\code{TRUE}).}
+
+\item{ties_method}{Character string specifying how ties are treated when
+ordering. Can be \code{"average"} (better for continous scores like semantic
+distance) or \code{"random"} (default, better for ratings). See \code{\link[=rank]{rank()}} for details.}
 }
 \value{
 The input data frame with additional columns:

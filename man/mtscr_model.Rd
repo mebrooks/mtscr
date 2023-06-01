@@ -10,7 +10,8 @@ mtscr_model(
   item_column,
   score_column,
   top = 1,
-  prepared = FALSE
+  prepared = FALSE,
+  ties_method = "random"
 )
 }
 \arguments{
@@ -27,6 +28,10 @@ mtscr_model(
 to include in the model. Default is 1, i.e. only the top answer.}
 
 \item{prepared}{Logical, is the data already prepared with \code{mtscr_prepare()}?}
+
+\item{ties_method}{Character string specifying how ties are treated when
+ordering. Can be \code{"average"} (better for continous scores like semantic
+distance) or \code{"random"} (default, better for ratings). See \code{\link[=rank]{rank()}} for details.}
 }
 \value{
 The return value depends on length of the \code{top} argument. If \code{top} is a single

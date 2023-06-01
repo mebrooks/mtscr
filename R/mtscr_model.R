@@ -31,7 +31,7 @@
 #' # extract effects for creativity score by hand
 #' model <- mtscr_model(mtscr_creativity, id, item, SemDis_MEAN, top = 2)
 #' creativity_score <- glmmTMB::ranef(model)$cond$id[, 1]
-mtscr_model <- function(df, id_column, item_column, score_column, top = 1, prepared = FALSE) {
+mtscr_model <- function(df, id_column, item_column, score_column, top = 1, prepared = FALSE, ties_method = "random") {
   id_column <- rlang::ensym(id_column)
   item_column <- rlang::ensym(item_column)
   score_column <- rlang::ensym(score_column)
@@ -55,7 +55,7 @@ mtscr_model <- function(df, id_column, item_column, score_column, top = 1, prepa
 
   # prepare
   if (!prepared) {
-    df <- mtscr_prepare(df, !!id_column, !!item_column, !!score_column, top = top, minimal = TRUE)
+    df <- mtscr_prepare(df, !!id_column, !!item_column, !!score_column, top = top, minimal = TRUE, ties_method = ties_method)
   }
   n_items <- length(unique(df[[rlang::as_label(item_column)]])) # number of unique items
 
