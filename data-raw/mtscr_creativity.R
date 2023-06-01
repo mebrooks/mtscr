@@ -10,7 +10,7 @@ mtscr_creativity <- readr::read_csv("data-raw/study2.csv") |>
       "pencil", "pillow",
       "purse", "sock"
     ),
-    any(is.na(SemDis_MEAN))
+    !is.na(SemDis_MEAN)
   )
 
 usethis::use_data(mtscr_creativity, overwrite = TRUE)
