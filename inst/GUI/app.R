@@ -1,7 +1,4 @@
 require("shiny")
-if (Sys.getenv("RSTUDIO") == "1") {
-  options(shiny.launch.browser = .rs.invokeShinyWindowViewer) # new window for RStudio
-}
 
 # UI ----
 ui <- fluidPage(
