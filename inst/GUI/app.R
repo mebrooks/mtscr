@@ -108,7 +108,8 @@ server <- function(input, output, session) {
     scored_data <- mtscr::mtscr_score(data, !!id_col, !!item_col, !!score_col, top = top, format = "minimal")
     scored_data_whole <- mtscr::mtscr_score(data, !!id_col, !!item_col, !!score_col, top = top, format = "full")
     output$scored_data_header <- renderUI(tags$b("Scored data:"))
-    output$scored_data <- DT::renderDataTable(scored_data,
+    output$scored_data <- DT::renderDataTable(
+      scored_data,
       extensions = "Buttons",
       options = list(
         dom = "Bfrtip",
