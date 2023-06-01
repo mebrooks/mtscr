@@ -133,6 +133,16 @@ mtscr_prepare <- function(df, id_column, item_column, score_column, top = 1, min
     df <- dplyr::ungroup(df)
   }
 
+  # Remove NA scores if present
+  if (any(is.na(df[[rlang::as_name(score_column)]]))) {
+    cli::cli_inform(
+      c(
+        "Removed NA values from {.var {rlang::expr_text(substitute(score_column))}}"
+      )
+    )
+    df <- dplyr::filter(df, !is.na(!!score_column))
+  }
+
   df <- df |>
     dplyr::mutate(df,
       .z_score = as.vector(scale({{ score_column }}))

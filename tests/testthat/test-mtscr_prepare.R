@@ -122,3 +122,22 @@ test_that("result is ungrouped", {
   # check that result is ungrouped
   expect_false(dplyr::is_grouped_df(result))
 })
+
+# Test that NA values from score_column are removed
+test_that("NA values from score_column are removed", {
+  # create a test data frame with NA values in the score column
+  df_with_na <- df
+  df_with_na$score[1] <- NA
+
+  # expect message
+  expect_message(mtscr_prepare(df_with_na, id, item, score))
+
+  # call function with test data frame
+  result <- mtscr_prepare(df_with_na, id, item, score)
+
+  # check that result has the expected number of rows
+  expect_equal(nrow(result), nrow(df) - 1)
+
+  # check that result has no NA values in the score column
+  expect_false(any(is.na(result$score)))
+})
