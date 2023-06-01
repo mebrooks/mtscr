@@ -57,29 +57,36 @@ mtscr_model <- function(df, id_column, item_column, score_column, top = 1, prepa
   if (!prepared) {
     df <- mtscr_prepare(df, !!id_column, !!item_column, !!score_column, top = top, minimal = TRUE)
   }
+  n_items <- length(unique(df[[rlang::as_label(item_column)]])) # number of unique items
 
   # create formulas
-  # formula example: .z_score ~ -1 + item + item:.ordering_topX + (.ordering_X | id)
+  # formula example: .z_score ~ -1 + item + item:.ordering_topX + (.ordering_topX | id)
   formulas <- purrr::map_vec(
     ordering_columns,
     \(x) {
-      c(
-        stats::as.formula(
-          paste0(
-            ".z_score ~ -1 + ",
-            rlang::as_name(item_column),
-            " + ",
-            rlang::as_name(item_column),
-            ":",
-            x,
-            " + (",
-            x,
-            " | ",
-            rlang::as_name(id_column),
-            ")"
-          )
+      formula <- ".z_score ~ -1 + "
+      if (n_items != 1) { # item effect only when more than 1 item
+        formula <- paste0(
+          formula,
+          rlang::as_name(item_column),
+          " + ",
+          rlang::as_name(item_column),
+          ":"
         )
+      }
+      formula <- paste0(
+        formula,
+        x,
+        " + (",
+        x,
+        " | ",
+        rlang::as_name(id_column),
+        ")"
       )
+
+      formula |>
+        stats::as.formula() |>
+        c() # convert to vector
     }
   )
 

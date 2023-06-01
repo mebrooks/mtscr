@@ -129,3 +129,12 @@ test_that("warning is thrown when data is unprepared and prepared = TRUE", {
   # call function with prepared = TRUE
   expect_warning(mtscr_model(df, id, item, score, prepared = TRUE))
 })
+
+# Test that no error when there's only one item type
+test_that("no error when there's only one item type", {
+  # create a test data frame with only one item type
+  df_one_item <- data.frame(id = c(1, 2), item = c("apple", "apple"), score = c(0.5, 0.6))
+
+  # call function with test data frame
+  expect_no_error(mtscr_model(df_one_item, id, item, score))
+})
