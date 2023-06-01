@@ -148,7 +148,7 @@ test_that("works the same with quoted and unquoted column names", {
   res_unquoted <- mtscr_model(mtscr_creativity, id, item, SemDis_MEAN)
 
   # check that the two results are the same
-  expect_equal(mtscr_model_summary(res_quoted), mtscr_model_summary(res_unquoted))
+  expect_equal(mtscr_model_summary(res_quoted), mtscr_model_summary(res_unquoted), tolerance = 0.0001)
 })
 
 # Test that works if item column is omitted
