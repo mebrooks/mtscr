@@ -42,7 +42,7 @@ mtscr_model_summary <- function(model) {
   purrr::map(
     model,
     \(x) {
-      st <- glmmTMB::VarCorr(x)[1]$cond$id[1]
+      st <- glmmTMB::VarCorr(x)[1]$cond[[1]][1]
       diag_cov <- x$sdr$diag.cov.random
       se <- diag_cov[seq(1, length(diag_cov) / 2)] |>
         mean()

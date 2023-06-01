@@ -58,9 +58,9 @@ mtscr_score <- function(df, id_column, item_column = NULL, score_column, top = 1
     \(current_model, top_number) {
       col_name <- paste0(".creativity_score_top", top_number)
 
-      glmmTMB::ranef(current_model)$cond$id |>
-        dplyr::as_tibble(rownames = "id") |>
-        dplyr::select("id", !!col_name := "(Intercept)")
+      glmmTMB::ranef(current_model)$cond[[rlang::as_label(id_column)]] |>
+        dplyr::as_tibble(rownames = rlang::as_label(id_column)) |>
+        dplyr::select(!!id_column, !!col_name := "(Intercept)")
     }
   ) |>
     Reduce(dplyr::full_join, x = _) |>
