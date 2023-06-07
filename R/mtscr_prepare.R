@@ -62,7 +62,7 @@ mtscr_prepare <- function(df, id_column, item_column = NULL, score_column, top =
       )
     )
   }
-  if(!rlang::quo_is_null(item_column_quo)) {
+  if (!rlang::quo_is_null(item_column_quo)) {
     if (!rlang::has_name(df, rlang::as_name(item_column))) {
       cli::cli_abort(
         c(
@@ -73,15 +73,15 @@ mtscr_prepare <- function(df, id_column, item_column = NULL, score_column, top =
       )
     }
   }
-    if (!rlang::has_name(df, rlang::as_name(score_column))) {
-      cli::cli_abort(
-        c(
-          "All columns must exist in the data.",
-          "x" = "Column {.var {score_column}} does not exist.",
-          "i" = "Check the spelling."
-        )
+  if (!rlang::has_name(df, rlang::as_name(score_column))) {
+    cli::cli_abort(
+      c(
+        "All columns must exist in the data.",
+        "x" = "Column {.var {score_column}} does not exist.",
+        "i" = "Check the spelling."
       )
-    }
+    )
+  }
 
   # check if score_column is numeric
   if (!is.numeric(df[[rlang::as_name(score_column)]])) {
@@ -169,32 +169,35 @@ mtscr_prepare <- function(df, id_column, item_column = NULL, score_column, top =
   df <- df |>
     dplyr::arrange({{ id_column }}, {{ item_column }}, dplyr::desc(.data$.z_score))
 
-  df <- df |>
+  base_cols <- df |>
     dplyr::mutate(
-    .ordering = rank(
-      -.data$.z_score, # minus for descending order
-      ties.method = ties_method
-    ) - 1 # -1 to start with 0
-  )
+      .ordering = rank(
+        -.data$.z_score, # minus for descending order
+        ties.method = ties_method
+      ) - 1 # -1 to start with 0
+    )
 
   top <- as.list(top)
 
   df <- purrr::map(top, \(x) {
-    df |>
+    base_cols |>
       dplyr::mutate(
         !!glue(".ordering_top{x}") := dplyr::case_when(
           .ordering < x ~ 0,
           .default = .data$.ordering
         )
-      )
-  }) |>
-    Reduce(dplyr::full_join, x = _) |>
-    suppressMessages() |> # suppress info about joining by
+      ) |>
+      dplyr::ungroup() |>
+      dplyr::select(dplyr::starts_with(".ordering_top"))
+  })
+
+  df <- dplyr::bind_cols(base_cols, df) |>
     dplyr::ungroup()
+
 
   if (minimal) {
     df <- df |>
-      dplyr::select({{ id_column }}, {{ item_column }}, ".z_score", dplyr::starts_with(".ordering"))
+        dplyr::select({{ id_column }}, {{ item_column }}, ".z_score", dplyr::starts_with(".ordering"))
   }
 
   return(df)

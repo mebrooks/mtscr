@@ -165,3 +165,15 @@ test_that("works if item column is omitted", {
   # check that results are the same
   expect_equal(glmmTMB::ranef(result_item), glmmTMB::ranef(result_no_item))
 })
+
+# Test that top1 models are the same when top = 1 and top = 1:2
+test_that("top1 models are the same when top = 1 and top = 1:2", {
+  # call function with top = 1
+  res_top1 <- mtscr_model(mtscr_creativity, id, item, SemDis_MEAN, top = 1)
+
+  # call function with top = 1:2
+  res_top1_3 <- mtscr_model(mtscr_creativity, id, item, SemDis_MEAN, top = 1:2)
+
+  # check that the two results are the same
+  expect_equal(mtscr_model_summary(res_top1), mtscr_model_summary(res_top1_3[["top1"]]))
+})
