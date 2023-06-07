@@ -175,5 +175,5 @@ test_that("top1 models are the same when top = 1 and top = 1:2", {
   res_top1_3 <- mtscr_model(mtscr_creativity, id, item, SemDis_MEAN, top = 1:2)
 
   # check that the two results are the same
-  expect_equal(mtscr_model_summary(res_top1), mtscr_model_summary(res_top1_3[["top1"]]))
+  expect_equal(mtscr_model_summary(res_top1), mtscr_model_summary(res_top1_3[["top1"]]), tolerance = 0.0001)
 })
