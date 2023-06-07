@@ -22,7 +22,7 @@
 #'
 #' # add scores to the original data frame
 #' mtscr_score(mtscr_creativity, id, item, SemDis_MEAN, format = "full")
-mtscr_score <- function(df, id_column, item_column = NULL, score_column, top = 1, format = "minimal", ties_method = "random") {
+mtscr_score <- function(df, id_column, item_column = NULL, score_column, top = 1, format = c("minimal", "full"), ties_method = c("random", "average")) {
   id_column <- rlang::ensym(id_column)
   item_column_quo <- enquo(item_column)
   if (!rlang::quo_is_null(item_column_quo)) {
@@ -31,17 +31,9 @@ mtscr_score <- function(df, id_column, item_column = NULL, score_column, top = 1
     item_column <- item_column_quo
   }
   score_column <- rlang::ensym(score_column)
+  format <- rlang::arg_match(format)
+  ties_method <- rlang::arg_match(ties_method)
   df_original <- df
-
-  # check that format is either "minimal" or "full"
-  if (!format %in% c("minimal", "full")) {
-    cli::cli_abort(
-      c(
-        "{.arg format} must be either \"minimal\" or \"full\".",
-        "x" = "{.var {rlang::expr_text(substitute(format))}} is invalid."
-      )
-    )
-  }
 
   # prepare
   df <- mtscr_prepare(df, !!id_column, !!item_column, !!score_column, top = top, minimal = FALSE, ties_method = ties_method)

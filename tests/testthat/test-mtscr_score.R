@@ -65,7 +65,7 @@ test_that("invalid format error is thrown", {
   expect_error(mtscr_score(mtscr_creativity, id, item, SemDis_MEAN, format = "invalid"))
 
   # call function with format = c("minimal", "full")
-  expect_error(mtscr_score(mtscr_creativity, id, item, SemDis_MEAN, format = c("minimal", "full")))
+  expect_error(mtscr_score(mtscr_creativity, id, item, SemDis_MEAN, format = c("minimal", "invalid")))
 })
 
 # Test that top argument must be integer

@@ -10,8 +10,8 @@ mtscr_score(
   item_column = NULL,
   score_column,
   top = 1,
-  format = "minimal",
-  ties_method = "random"
+  format = c("minimal", "full"),
+  ties_method = c("random", "average")
 )
 }
 \arguments{

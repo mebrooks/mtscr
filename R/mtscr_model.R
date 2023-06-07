@@ -31,7 +31,7 @@
 #' # extract effects for creativity score by hand
 #' model <- mtscr_model(mtscr_creativity, id, item, SemDis_MEAN, top = 2)
 #' creativity_score <- glmmTMB::ranef(model)$cond$id[, 1]
-mtscr_model <- function(df, id_column, item_column = NULL, score_column, top = 1, prepared = FALSE, ties_method = "random") {
+mtscr_model <- function(df, id_column, item_column = NULL, score_column, top = 1, prepared = FALSE, ties_method = c("random", "average")) {
   id_column <- rlang::ensym(id_column)
   item_column_quo <- rlang::enquo(item_column)
   if (!rlang::quo_is_null(item_column_quo)) {
@@ -40,6 +40,8 @@ mtscr_model <- function(df, id_column, item_column = NULL, score_column, top = 1
     item_column <- item_column_quo
   }
   score_column <- rlang::ensym(score_column)
+
+  ties_method <- rlang::arg_match(ties_method)
 
   # check if all .ordering_X columns exist
   ordering_columns <- purrr::map(

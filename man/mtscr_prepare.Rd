@@ -11,7 +11,7 @@ mtscr_prepare(
   score_column,
   top = 1,
   minimal = FALSE,
-  ties_method = "random"
+  ties_method = c("random", "average")
 )
 }
 \arguments{

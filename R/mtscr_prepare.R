@@ -32,7 +32,7 @@
 #' data("mtscr_creativity", package = "mtscr")
 #' # Indicators for top 1 and top 2 answers
 #' mtscr_prepare(mtscr_creativity, id, item, SemDis_MEAN, top = 1:2, minimal = TRUE)
-mtscr_prepare <- function(df, id_column, item_column = NULL, score_column, top = 1, minimal = FALSE, ties_method = "random") {
+mtscr_prepare <- function(df, id_column, item_column = NULL, score_column, top = 1, minimal = FALSE, ties_method = c("random", "average")) {
   id_column <- rlang::ensym(id_column)
   item_column_quo <- rlang::enquo(item_column)
   if (!rlang::quo_is_null(item_column_quo)) {
@@ -41,6 +41,8 @@ mtscr_prepare <- function(df, id_column, item_column = NULL, score_column, top =
     item_column <- item_column_quo
   }
   score_column <- rlang::ensym(score_column)
+
+  ties_method <- rlang::arg_match(ties_method)
 
   # check if df is a data frame
   if (!is.data.frame(df)) {
