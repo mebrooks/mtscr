@@ -22,7 +22,7 @@
 #'
 #' # add scores to the original data frame
 #' mtscr_score(mtscr_creativity, id, item, SemDis_MEAN, format = "full")
-mtscr_score <- function(df, id_column, item_column = NULL, score_column, top = 1, format = c("minimal", "full"), ties_method = c("random", "average")) {
+mtscr_score <- function(df, id_column, item_column = NULL, score_column, top = 1, format = c("minimal", "full"), ties_method = c("random", "average"), self_ranking = NULL) {
   id_column <- rlang::ensym(id_column)
   item_column_quo <- enquo(item_column)
   if (!rlang::quo_is_null(item_column_quo)) {
@@ -33,6 +33,10 @@ mtscr_score <- function(df, id_column, item_column = NULL, score_column, top = 1
   score_column <- rlang::ensym(score_column)
   format <- rlang::arg_match(format)
   ties_method <- rlang::arg_match(ties_method)
+  self_ranking_quo <- rlang::enquo(self_ranking)
+  if (!rlang::quo_is_null(self_ranking_quo)) {
+    self_ranking <- rlang::ensym(self_ranking)
+  }
   df_original <- df
 
   # prepare

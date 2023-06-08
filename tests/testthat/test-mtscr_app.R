@@ -5,7 +5,7 @@ testthat::test_that("mtscr_app runs", {
 })
 
 # Test that all needed packages are checked
-needed_packages <- c("DT", "broom.mixed", "datamods", "writexl")
+needed_packages <- c("DT", "datamods", "writexl", "shinyWidgets")
 returned_message <- mtscr_app(debug_mode = 1)
 
 testthat::test_that("all needed packages are checked", {

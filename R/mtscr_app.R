@@ -46,9 +46,9 @@
 #' }
 mtscr_app <- function(debug_mode = 0) {
   needed_packages <- if (debug_mode == 2) {
-    c("DT", "broom.mixed", "datamods", "writexl", "INVALID_PACKAGE")
+    c("DT", "datamods", "writexl", "shinyWidgets", "INVALID_PACKAGE")
   } else {
-    c("DT", "broom.mixed", "datamods", "writexl")
+    c("DT", "datamods", "writexl", "shinyWidgets")
   }
 
   needed_packages <- sapply(needed_packages, \(x) {

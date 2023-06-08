@@ -11,7 +11,8 @@ mtscr_score(
   score_column,
   top = 1,
   format = c("minimal", "full"),
-  ties_method = c("random", "average")
+  ties_method = c("random", "average"),
+  self_ranking = NULL
 )
 }
 \arguments{
@@ -35,8 +36,17 @@ to prepare indicators for. Default is 1, i.e. only the top answer.}
 }}
 
 \item{ties_method}{Character string specifying how ties are treated when
-ordering. Can be \code{"average"} (better for continous scores like semantic
+ordering. Can be \code{"average"} (better for continuous scores like semantic
 distance) or \code{"random"} (default, better for ratings). See \code{\link[=rank]{rank()}} for details.}
+
+\item{self_ranking}{Name of the column containing answers' self-ranking.
+Provide if model should be based on top answers self-chosen by the participant.
+Every item should have its own ranks. Preferably it should be a complete ranking
+(each answer with its own relative rank) starting with 1 for the best answer.
+Otherwise the top answers should have a value of 1, and the other answers should
+have a value of 0. In that case, the \code{top} argument doesn't change anything
+and should be left as \code{top = 1}. \code{ties_method} is not used if \code{self_ranking}
+was provided.}
 }
 \value{
 A tibble with creativity scores. If \code{format = "full"}, the original data frame is

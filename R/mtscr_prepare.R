@@ -13,8 +13,16 @@
 #' @param minimal Logical, append columns to df (`FALSE`) or return only `id`, `item`,
 #'     and the new columns (`TRUE`).
 #' @param ties_method Character string specifying how ties are treated when
-#'     ordering. Can be `"average"` (better for continous scores like semantic
+#'     ordering. Can be `"average"` (better for continuous scores like semantic
 #'     distance) or `"random"` (default, better for ratings). See [rank()] for details.
+#' @param self_ranking Name of the column containing answers' self-ranking.
+#'     Provide if model should be based on top answers self-chosen by the participant.
+#'     Every item should have its own ranks. Preferably it should be a complete ranking
+#'     (each answer with its own relative rank) starting with 1 for the best answer.
+#'     Otherwise the top answers should have a value of 1, and the other answers should
+#'     have a value of 0. In that case, the `top` argument doesn't change anything
+#'     and should be left as `top = 1`. `ties_method` is not used if `self_ranking`
+#'     was provided.
 #'
 #' @return The input data frame with additional columns:
 #'     \describe{
@@ -32,7 +40,7 @@
 #' data("mtscr_creativity", package = "mtscr")
 #' # Indicators for top 1 and top 2 answers
 #' mtscr_prepare(mtscr_creativity, id, item, SemDis_MEAN, top = 1:2, minimal = TRUE)
-mtscr_prepare <- function(df, id_column, item_column = NULL, score_column, top = 1, minimal = FALSE, ties_method = c("random", "average")) {
+mtscr_prepare <- function(df, id_column, item_column = NULL, score_column, top = 1, minimal = FALSE, ties_method = c("random", "average"), self_ranking = NULL) {
   id_column <- rlang::ensym(id_column)
   item_column_quo <- rlang::enquo(item_column)
   if (!rlang::quo_is_null(item_column_quo)) {
@@ -41,8 +49,11 @@ mtscr_prepare <- function(df, id_column, item_column = NULL, score_column, top =
     item_column <- item_column_quo
   }
   score_column <- rlang::ensym(score_column)
-
   ties_method <- rlang::arg_match(ties_method)
+  self_ranking_quo <- rlang::enquo(self_ranking)
+  if (!rlang::quo_is_null(self_ranking_quo)) {
+    self_ranking <- rlang::ensym(self_ranking)
+  }
 
   # check if df is a data frame
   if (!is.data.frame(df)) {
@@ -145,6 +156,16 @@ mtscr_prepare <- function(df, id_column, item_column = NULL, score_column, top =
     df <- dplyr::ungroup(df)
   }
 
+  # check if self_ranking contains only positive values
+  if (!rlang::quo_is_null(self_ranking_quo) && any(df[[rlang::as_name(self_ranking)]] <= 0)) {
+    cli::cli_abort(
+      c(
+        "{.var self_ranking must contain only positive values.",
+        "i" = "Check if the best answers have rank 1."
+      )
+    )
+  }
+
   # Remove NA scores if present
   if (any(is.na(df[[rlang::as_name(score_column)]]))) {
     cli::cli_inform(
@@ -171,13 +192,20 @@ mtscr_prepare <- function(df, id_column, item_column = NULL, score_column, top =
   df <- df |>
     dplyr::arrange({{ id_column }}, {{ item_column }}, dplyr::desc(.data$.z_score))
 
-  base_cols <- df |>
-    dplyr::mutate(
-      .ordering = rank(
-        -.data$.z_score, # minus for descending order
-        ties.method = ties_method
-      ) - 1 # -1 to start with 0
-    )
+  if (rlang::quo_is_null(self_ranking_quo)) {
+    base_cols <- df |>
+      dplyr::mutate(
+        .ordering = rank(
+          -.data$.z_score, # minus for descending order
+          ties.method = ties_method
+        ) - 1 # -1 to start with 0
+      )
+  } else {
+    base_cols <- df |>
+      dplyr::mutate(
+        .ordering = abs(!!self_ranking - 1)
+      )
+  }
 
   top <- as.list(top)
 
@@ -199,7 +227,7 @@ mtscr_prepare <- function(df, id_column, item_column = NULL, score_column, top =
 
   if (minimal) {
     df <- df |>
-        dplyr::select({{ id_column }}, {{ item_column }}, ".z_score", dplyr::starts_with(".ordering"))
+      dplyr::select({{ id_column }}, {{ item_column }}, ".z_score", dplyr::starts_with(".ordering"))
   }
 
   return(df)
