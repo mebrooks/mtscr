@@ -64,6 +64,20 @@ mtscr_model <- function(df, id_column, item_column = NULL, score_column, top = 1
   if (!prepared) {
     df <- mtscr_prepare(df, !!id_column, !!item_column, !!score_column, top = top, minimal = TRUE, ties_method = ties_method)
   }
+
+  # implicit conversion to factors
+  df <- df |>
+    dplyr::mutate(
+      !!id_column := factor(!!id_column)
+    )
+
+  if (!rlang::quo_is_null(item_column_quo)) {
+    df <- df |>
+      dplyr::mutate(
+        !!item_column := factor(!!item_column)
+      )
+  }
+
   if (!rlang::quo_is_null(item_column_quo)) {
     n_items <- length(unique(df[[rlang::as_label(item_column)]])) # number of unique items
   } else {
