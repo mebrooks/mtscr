@@ -61,6 +61,7 @@ Imports:
     readr,
     rlang (>= 0.4.11),
     shiny,
+    stringr,
     tibble
 Suggests: 
     covr,

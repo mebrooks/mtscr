@@ -46,7 +46,7 @@ Every item should have its own ranks. Preferably it should be a complete ranking
 Otherwise the top answers should have a value of 1, and the other answers should
 have a value of 0. In that case, the \code{top} argument doesn't change anything
 and should be left as \code{top = 1}. \code{ties_method} is not used if \code{self_ranking}
-was provided.}
+was provided. See \link{mtscr_self_rank} for example.}
 }
 \value{
 A tibble with creativity scores. If \code{format = "full"}, the original data frame is
@@ -62,6 +62,10 @@ mtscr_score(mtscr_creativity, id, item, SemDis_MEAN, top = 1:2)
 
 # add scores to the original data frame
 mtscr_score(mtscr_creativity, id, item, SemDis_MEAN, format = "full")
+
+# use self-chosen best answers
+data("mtscr_self_rank", package = "mtscr")
+mtscr_score(mtscr_self_rank, subject, task, avr, self_ranking = top_two)
 }
 \seealso{
 \code{\link[tidyr:pivot_wider]{tidyr::pivot_wider()}} for converting the output to wide format by yourself.

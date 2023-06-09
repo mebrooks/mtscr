@@ -43,7 +43,7 @@ Every item should have its own ranks. Preferably it should be a complete ranking
 Otherwise the top answers should have a value of 1, and the other answers should
 have a value of 0. In that case, the \code{top} argument doesn't change anything
 and should be left as \code{top = 1}. \code{ties_method} is not used if \code{self_ranking}
-was provided.}
+was provided. See \link{mtscr_self_rank} for example.}
 }
 \value{
 The input data frame with additional columns:

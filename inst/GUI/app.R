@@ -82,7 +82,7 @@ server <- function(input, output, session) {
         )
       )),
       selectInput("ties_method", "Select ties method", choices = c("random (better for ratings)", "average (better for continous scores)")),
-      actionButton("self_ranking_info", "What is self-ranking?"),
+      actionButton("self_ranking_info", "What is self-ranking and how to format it?"),
       selectInput(
         "self_ranking",
         "Column with self-ranking:",
@@ -104,7 +104,7 @@ server <- function(input, output, session) {
   observeEvent(input$self_ranking_info, {
     shinyWidgets::show_alert(
       title = NULL,
-      text = "Name of the column containing answers' self-ranking. Provide if model should be based on top answers self-chosen by the participant. Every item should have its own ranks. Preferably it should be a complete ranking (each answer with its own relative rank) starting with 1 for the best answer. Otherwise the top answers should have a value of 1, and the other answers should have a value of 0. In that case, the Top answers argument doesn't change anything so leave the slider at 1. Ties method is not used if self-ranking was provided.",
+      text = "Name of the column containing answers' self-ranking. Provide if model should be based on top answers self-chosen by the participant. Every item should have its own ranks. Preferably it should be a complete ranking (each answer with its own relative rank) starting with 1 for the best answer. Otherwise the top answers should have a value of 1, and the other answers should have a value of 0. In that case, the Top answers argument doesn't change anything so leave the slider at 1. Ties method is not used if self-ranking was provided. See mtscr_self_rank dataset fo example.",
       type = "info"
     )
   })
@@ -123,11 +123,11 @@ server <- function(input, output, session) {
     ties_method <- ifelse(input$ties_method == "random (better for ratings)", "random", "average")
     top <- seq(1, input$top)
     if (input$self_ranking == "no self-ranking") {
-      item_col <- NULL
+      self_ranking <- NULL
     } else {
-      item_col <- input$self_ranking
+      self_ranking <- input$self_ranking
     }
-    model <- mtscr::mtscr_model(data, !!id_col, !!item_col, !!score_col, top = top, ties_method = ties_method, self_ranking = self_ranking)
+    model <- mtscr::mtscr_model(data, !!id_col, !!item_col, !!score_col, top = top, ties_method = ties_method, self_ranking = !!self_ranking)
     if (length(top) == 1) {
       model <- list(model)
     }
@@ -138,8 +138,8 @@ server <- function(input, output, session) {
     output$models_summary <- renderTable(models_summary)
 
     ### Make UI for scored data ----
-    scored_data <- mtscr::mtscr_score(data, !!id_col, !!item_col, !!score_col, top = top, format = "minimal", ties_method = ties_method, self_ranking = self_ranking)
-    scored_data_whole <- mtscr::mtscr_score(data, !!id_col, !!item_col, !!score_col, top = top, format = "full", ties_method = ties_method, self_ranking = self_ranking)
+    scored_data <- mtscr::mtscr_score(data, !!id_col, !!item_col, !!score_col, top = top, format = "minimal", ties_method = ties_method, self_ranking = !!self_ranking)
+    scored_data_whole <- mtscr::mtscr_score(data, !!id_col, !!item_col, !!score_col, top = top, format = "full", ties_method = ties_method, self_ranking = !!self_ranking)
     output$scored_data_header <- renderUI(tags$b("Scored data:"))
     output$scored_data <- DT::renderDataTable(
       scored_data,

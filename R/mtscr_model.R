@@ -47,13 +47,13 @@ mtscr_model <- function(df, id_column, item_column = NULL, score_column, top = 1
   }
 
   # check if all .ordering_X columns exist
-  ordering_columns <- purrr::map(
+  present_ordering_columns <- purrr::map(
     as.list(top),
     \(x) {
       paste0(".ordering_top", x)
     }
   )
-  if (prepared && !any(ordering_columns %in% names(df))) {
+  if (prepared && !any(present_ordering_columns %in% names(df))) {
     cli::cli_warn(
       c(
         "Couldn't find all {.var .ordering_top} columns.",
@@ -65,7 +65,7 @@ mtscr_model <- function(df, id_column, item_column = NULL, score_column, top = 1
 
   # prepare
   if (!prepared) {
-    df <- mtscr_prepare(df, !!id_column, !!item_column, !!score_column, top = top, minimal = TRUE, ties_method = ties_method)
+    df <- mtscr_prepare(df, !!id_column, !!item_column, !!score_column, top = top, minimal = TRUE, ties_method = ties_method, self_ranking = !!self_ranking)
   }
 
   # implicit conversion to factors
@@ -86,6 +86,11 @@ mtscr_model <- function(df, id_column, item_column = NULL, score_column, top = 1
   } else {
     n_items <- 1
   }
+
+  # count ordering columns
+  ordering_columns <- df |>
+    dplyr::select(dplyr::starts_with(".ordering_top")) |>
+    names()
 
   # create formulas
   # formula example: .z_score ~ -1 + item + item:.ordering_topX + (.ordering_topX | id)
@@ -127,10 +132,10 @@ mtscr_model <- function(df, id_column, item_column = NULL, score_column, top = 1
     )
   })
 
-  if (length(top) == 1) {
+  if (length(ordering_columns) == 1) {
     return(models[[1]])
   } else {
-    names(models) <- paste0("top", top)
+    names(models) <- paste0("top", stringr::str_remove(ordering_columns, "\\.ordering_top"))
     return(models)
   }
 }

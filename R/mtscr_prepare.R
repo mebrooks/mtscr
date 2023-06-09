@@ -22,7 +22,7 @@
 #'     Otherwise the top answers should have a value of 1, and the other answers should
 #'     have a value of 0. In that case, the `top` argument doesn't change anything
 #'     and should be left as `top = 1`. `ties_method` is not used if `self_ranking`
-#'     was provided.
+#'     was provided. See [mtscr_self_rank] for example.
 #'
 #' @return The input data frame with additional columns:
 #'     \describe{
@@ -157,10 +157,10 @@ mtscr_prepare <- function(df, id_column, item_column = NULL, score_column, top =
   }
 
   # check if self_ranking contains only positive values
-  if (!rlang::quo_is_null(self_ranking_quo) && any(df[[rlang::as_name(self_ranking)]] <= 0)) {
+  if (!rlang::quo_is_null(self_ranking_quo) && any(df[[rlang::as_name(self_ranking)]] < 0)) {
     cli::cli_abort(
       c(
-        "{.var self_ranking must contain only positive values.",
+        "{.var self_ranking} must contain only positive values.",
         "i" = "Check if the best answers have rank 1."
       )
     )
@@ -203,8 +203,32 @@ mtscr_prepare <- function(df, id_column, item_column = NULL, score_column, top =
   } else {
     base_cols <- df |>
       dplyr::mutate(
-        .ordering = abs(!!self_ranking - 1)
+        .ordering = ({{ self_ranking }} - 1) |>
+          abs()
       )
+  }
+
+  if (any(top > max(base_cols[[".ordering"]]))) {
+    if (all(base_cols[[".ordering"]] == 0)) {
+      top <- 1
+      cli::cli_warn(
+        "No variance in {.var .z_score}."
+      )
+    } else {
+      top <- top[top <= max(base_cols[[".ordering"]])]
+    }
+    if (length(top) == 0) {
+      cli::cli_abort(
+        "{.var top} must not be greater than biggest rank."
+      )
+    } else {
+      cli::cli_warn(
+        c(
+          "{.var top} must not be greater than biggest rank.",
+          "i" = "Deleted inadequate values."
+        )
+      )
+    }
   }
 
   top <- as.list(top)

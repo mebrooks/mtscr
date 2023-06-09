@@ -9,7 +9,7 @@
 
 A \code{tibble} with 4585 rows and 10 columns:
 \describe{
-\item{id}{patricipants' unique identification number}
+\item{id}{patricipant's unique identification number}
 \item{response}{response in AUT}
 \item{item}{item for which alternative uses were searched for}
 \item{SemDis_MEAN}{mean semantic distance}
