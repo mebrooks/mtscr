@@ -127,7 +127,7 @@ server <- function(input, output, session) {
     } else {
       self_ranking <- input$self_ranking
     }
-    model <- mtscr::mtscr_model(data, !!id_col, !!item_col, !!score_col, top = top, ties_method = ties_method, self_ranking = !!self_ranking)
+    model <- mtscr::mtscr_model(data, {{ id_col }}, {{ item_col }}, {{ score_col }}, top = top, ties_method = ties_method, self_ranking = {{ self_ranking }})
     if (length(top) == 1) {
       model <- list(model)
     }
@@ -138,8 +138,8 @@ server <- function(input, output, session) {
     output$models_summary <- renderTable(models_summary)
 
     ### Make UI for scored data ----
-    scored_data <- mtscr::mtscr_score(data, !!id_col, !!item_col, !!score_col, top = top, format = "minimal", ties_method = ties_method, self_ranking = !!self_ranking)
-    scored_data_whole <- mtscr::mtscr_score(data, !!id_col, !!item_col, !!score_col, top = top, format = "full", ties_method = ties_method, self_ranking = !!self_ranking)
+    scored_data <- mtscr::mtscr_score(data, {{ id_col }}, {{ item_col }}, {{ score_col }}, top = top, format = "minimal", ties_method = ties_method, self_ranking = {{ self_ranking }})
+    scored_data_whole <- mtscr::mtscr_score(data, {{ id_col }}, {{ item_col }}, {{ score_col }}, top = top, format = "full", ties_method = ties_method, self_ranking = {{ self_ranking }})
     output$scored_data_header <- renderUI(tags$b("Scored data:"))
     output$scored_data <- DT::renderDataTable(
       scored_data,
