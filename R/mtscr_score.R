@@ -40,6 +40,8 @@ mtscr_score <- function(df, id_column, item_column = NULL, score_column, top = 1
   self_ranking_quo <- rlang::enquo(self_ranking)
   if (!rlang::quo_is_null(self_ranking_quo)) {
     self_ranking <- rlang::ensym(self_ranking)
+  } else {
+    self_ranking <- self_ranking_quo
   }
   df_original <- df
 
