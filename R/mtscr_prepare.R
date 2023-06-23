@@ -17,11 +17,9 @@
 #'     distance) or `"random"` (default, better for ratings). See [rank()] for details.
 #' @param self_ranking Name of the column containing answers' self-ranking.
 #'     Provide if model should be based on top answers self-chosen by the participant.
-#'     Every item should have its own ranks. Preferably it should be a complete ranking
-#'     (each answer with its own relative rank) starting with 1 for the best answer.
-#'     Otherwise the top answers should have a value of 1, and the other answers should
-#'     have a value of 0. In that case, the `top` argument doesn't change anything
-#'     and should be left as `top = 1`. `ties_method` is not used if `self_ranking`
+#'     Every item should have its own ranks. The top answers should have a value of 1,
+#'     and the other answers should have a value of 0. In that case, the `top` argument
+#'     doesn't change anything and should be left as `top = 1`. `ties_method` is not used if `self_ranking`
 #'     was provided. See [mtscr_self_rank] for example.
 #'
 #' @return The input data frame with additional columns:
@@ -194,7 +192,6 @@ mtscr_prepare <- function(df, id_column, item_column = NULL, score_column, top =
   df <- df |>
     dplyr::arrange({{ id_column }}, {{ item_column }}, dplyr::desc(.data$.z_score))
 
-  if (rlang::quo_is_null(self_ranking_quo)) {
     base_cols <- df |>
       dplyr::mutate(
         .ordering = rank(
@@ -202,13 +199,19 @@ mtscr_prepare <- function(df, id_column, item_column = NULL, score_column, top =
           ties.method = ties_method
         ) - 1 # -1 to start with 0
       )
-  } else {
-    base_cols <- df |>
-      dplyr::mutate(
-        .ordering = ({{ self_ranking }} - 1) |>
-          abs()
-      )
-  }
+
+    if(!rlang::quo_is_null(self_ranking_quo)) {
+      base_cols <- base_cols |>
+        dplyr::mutate(
+          .self_ranked = ({{self_ranking}} - 1) |>
+            abs(),
+          .ordering = dplyr::case_when(
+            .self_ranked == 0 ~ 0,
+            .default = .data$.ordering + 1
+          )
+        ) |>
+        dplyr::select(-".self_ranked")
+    }
 
   if (any(top > max(base_cols[[".ordering"]]))) {
     if (all(base_cols[[".ordering"]] == 0)) {
