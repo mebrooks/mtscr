@@ -15,6 +15,8 @@
 #' @param ties_method Character string specifying how ties are treated when
 #'     ordering. Can be `"average"` (better for continuous scores like semantic
 #'     distance) or `"random"` (default, better for ratings). See [rank()] for details.
+#' @param normalise Logical, should the creativity score be normalised? Default is `TRUE` and
+#'    it's recommended to leave it as such.
 #' @param self_ranking Name of the column containing answers' self-ranking.
 #'     Provide if model should be based on top answers self-chosen by the participant.
 #'     Every item should have its own ranks. The top answers should have a value of 1,
@@ -38,7 +40,7 @@
 #' data("mtscr_creativity", package = "mtscr")
 #' # Indicators for top 1 and top 2 answers
 #' mtscr_prepare(mtscr_creativity, id, item, SemDis_MEAN, top = 1:2, minimal = TRUE)
-mtscr_prepare <- function(df, id_column, item_column = NULL, score_column, top = 1, minimal = FALSE, ties_method = c("random", "average"), self_ranking = NULL) {
+mtscr_prepare <- function(df, id_column, item_column = NULL, score_column, top = 1, minimal = FALSE, ties_method = c("random", "average"), normalise = TRUE, self_ranking = NULL) {
   id_column <- rlang::ensym(id_column)
   item_column_quo <- rlang::enquo(item_column)
   if (!rlang::quo_is_null(item_column_quo)) {
@@ -156,6 +158,16 @@ mtscr_prepare <- function(df, id_column, item_column = NULL, score_column, top =
     df <- dplyr::ungroup(df)
   }
 
+  # check if normalise is logical
+  if (!is.logical(normalise)) {
+    cli::cli_abort(
+      c(
+        "{.arg normalise} must be logical.",
+        "x" = "{.var {rlang::expr_text(substitute(normalise))}} is {.obj_type_friendly {normalise}}"
+      )
+    )
+  }
+
   # check if self_ranking contains only positive values
   if (!rlang::quo_is_null(self_ranking_quo) && any(df[[rlang::as_name(self_ranking)]] < 0)) {
     cli::cli_abort(
@@ -176,10 +188,12 @@ mtscr_prepare <- function(df, id_column, item_column = NULL, score_column, top =
     df <- dplyr::filter(df, !is.na(!!score_column))
   }
 
-  df <- df |>
-    dplyr::mutate(df,
-      .z_score = as.vector(scale({{ score_column }}))
-    )
+  if (normalise) {
+    df <- df |>
+      dplyr::mutate(df,
+        .z_score = as.vector(scale({{ score_column }}))
+      )
+  }
 
   if (!rlang::quo_is_null(item_column_quo)) {
     df <- df |>
@@ -190,34 +204,46 @@ mtscr_prepare <- function(df, id_column, item_column = NULL, score_column, top =
   }
 
   df <- df |>
-    dplyr::arrange({{ id_column }}, {{ item_column }}, dplyr::desc(.data$.z_score))
+    dplyr::arrange({{ id_column }}, {{ item_column }}, {{ score_column }})
 
-    base_cols <- df |>
+  # if (normalise) {
+  #   base_cols <- df |>
+  #     dplyr::mutate(
+  #       .ordering = rank(
+  #         -.data$.z_score, # minus for descending order
+  #         ties.method = ties_method
+  #       ) - 1 # -1 to start with 0
+  #     )
+  # } else {
+  base_cols <- df |>
+    dplyr::mutate(
+      .ordering = rank(
+        -{{ score_column }}, # minus for descending order
+        ties.method = ties_method
+      ) - 1 # -1 to start with 0
+    )
+  # }
+
+
+
+  if (!rlang::quo_is_null(self_ranking_quo)) {
+    base_cols <- base_cols |>
       dplyr::mutate(
-        .ordering = rank(
-          -.data$.z_score, # minus for descending order
-          ties.method = ties_method
-        ) - 1 # -1 to start with 0
-      )
-
-    if(!rlang::quo_is_null(self_ranking_quo)) {
-      base_cols <- base_cols |>
-        dplyr::mutate(
-          .self_ranked = ({{self_ranking}} - 1) |>
-            abs(),
-          .ordering = dplyr::case_when(
-            .self_ranked == 0 ~ 0,
-            .default = .data$.ordering + 1
-          )
-        ) |>
-        dplyr::select(-".self_ranked")
-    }
+        .self_ranked = ({{ self_ranking }} - 1) |>
+          abs(),
+        .ordering = dplyr::case_when(
+          .self_ranked == 0 ~ 0,
+          .default = .data$.ordering + 1
+        )
+      ) |>
+      dplyr::select(-".self_ranked")
+  }
 
   if (any(top > max(base_cols[[".ordering"]]))) {
     if (all(base_cols[[".ordering"]] == 0)) {
       top <- 1
       cli::cli_warn(
-        "No variance in {.var .z_score}."
+        "No variance in scores."
       )
     } else {
       top <- top[top <= max(base_cols[[".ordering"]])]
@@ -254,9 +280,12 @@ mtscr_prepare <- function(df, id_column, item_column = NULL, score_column, top =
     dplyr::ungroup()
 
 
-  if (minimal) {
+  if (minimal && normalise) {
     df <- df |>
       dplyr::select({{ id_column }}, {{ item_column }}, ".z_score", dplyr::starts_with(".ordering"))
+  } else if (minimal) {
+    df <- df |>
+      dplyr::select({{ id_column }}, {{ item_column }}, {{ score_column }}, dplyr::starts_with(".ordering"))
   }
 
   return(df)

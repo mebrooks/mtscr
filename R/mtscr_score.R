@@ -26,7 +26,7 @@
 #' # use self-chosen best answers
 #' data("mtscr_self_rank", package = "mtscr")
 #' mtscr_score(mtscr_self_rank, subject, task, avr, self_ranking = top_two)
-mtscr_score <- function(df, id_column, item_column = NULL, score_column, top = 1, format = c("minimal", "full"), ties_method = c("random", "average"), self_ranking = NULL) {
+mtscr_score <- function(df, id_column, item_column = NULL, score_column, top = 1, format = c("minimal", "full"), ties_method = c("random", "average"), normalise = TRUE, self_ranking = NULL) {
   id_column <- rlang::ensym(id_column)
   item_column_quo <- enquo(item_column)
   if (!rlang::quo_is_null(item_column_quo)) {
@@ -46,12 +46,12 @@ mtscr_score <- function(df, id_column, item_column = NULL, score_column, top = 1
   df_original <- df
 
   # prepare
-  df <- mtscr_prepare(df, !!id_column, !!item_column, !!score_column, top = top, minimal = FALSE, ties_method = ties_method, self_ranking = !!self_ranking)
+  df <- mtscr_prepare(df, !!id_column, !!item_column, !!score_column, top = top, minimal = FALSE, ties_method = ties_method, normalise = normalise, self_ranking = !!self_ranking)
   top <- df |>
     dplyr::select(dplyr::starts_with(".ordering_top")) |>
     names() |>
     stringr::str_remove(".ordering_top")
-  model <- mtscr_model(df, !!id_column, !!item_column, !!score_column, top = top, prepared = TRUE, ties_method = ties_method, self_ranking = !!self_ranking)
+  model <- mtscr_model(df, !!id_column, !!item_column, !!score_column, top = top, prepared = TRUE, ties_method = ties_method, normalise = normalise, self_ranking = !!self_ranking)
 
   if (length(top) == 1) {
     model <- list(model)

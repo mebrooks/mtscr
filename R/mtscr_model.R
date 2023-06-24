@@ -31,7 +31,7 @@
 #' # extract effects for creativity score by hand
 #' model <- mtscr_model(mtscr_creativity, id, item, SemDis_MEAN, top = 2)
 #' creativity_score <- glmmTMB::ranef(model)$cond$id[, 1]
-mtscr_model <- function(df, id_column, item_column = NULL, score_column, top = 1, prepared = FALSE, ties_method = c("random", "average"), self_ranking = NULL) {
+mtscr_model <- function(df, id_column, item_column = NULL, score_column, top = 1, prepared = FALSE, ties_method = c("random", "average"), normalise = TRUE, self_ranking = NULL) {
   id_column <- rlang::ensym(id_column)
   item_column_quo <- rlang::enquo(item_column)
   if (!rlang::quo_is_null(item_column_quo)) {
@@ -65,9 +65,18 @@ mtscr_model <- function(df, id_column, item_column = NULL, score_column, top = 1
     prepared <- FALSE
   }
 
+  # determine if normalise = TRUE when prepared = TRUE
+  if (prepared) {
+    if (rlang::has_name(df, ".z_score")) {
+      normalise <- TRUE
+    } else {
+      normalise <- FALSE
+    }
+  }
+
   # prepare
   if (!prepared) {
-    df <- mtscr_prepare(df, !!id_column, !!item_column, !!score_column, top = top, minimal = TRUE, ties_method = ties_method, self_ranking = !!self_ranking)
+    df <- mtscr_prepare(df, !!id_column, !!item_column, !!score_column, top = top, minimal = TRUE, ties_method = ties_method, normalise = normalise, self_ranking = !!self_ranking)
   }
 
   # implicit conversion to factors
@@ -96,10 +105,16 @@ mtscr_model <- function(df, id_column, item_column = NULL, score_column, top = 1
 
   # create formulas
   # formula example: .z_score ~ -1 + item + item:.ordering_topX + (.ordering_topX | id)
+  # formula if normalise = FALSE: SemDis_MEAN ~ -1 + item + item:.ordering_topX + (.ordering_topX | id)
   formulas <- purrr::map_vec(
     ordering_columns,
     \(x) {
-      formula <- ".z_score ~ -1 + "
+      if (normalise) {
+        formula <- ".z_score"
+      } else {
+        formula <- rlang::as_label(score_column)
+      }
+      formula <- paste0(formula, " ~ -1 + ")
       if (n_items != 1) { # item effect only when more than 1 item
         formula <- paste0(
           formula,

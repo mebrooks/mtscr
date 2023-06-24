@@ -12,6 +12,7 @@ mtscr_score(
   top = 1,
   format = c("minimal", "full"),
   ties_method = c("random", "average"),
+  normalise = TRUE,
   self_ranking = NULL
 )
 }
@@ -38,6 +39,9 @@ to prepare indicators for. Default is 1, i.e. only the top answer.}
 \item{ties_method}{Character string specifying how ties are treated when
 ordering. Can be \code{"average"} (better for continuous scores like semantic
 distance) or \code{"random"} (default, better for ratings). See \code{\link[=rank]{rank()}} for details.}
+
+\item{normalise}{Logical, should the creativity score be normalised? Default is \code{TRUE} and
+it's recommended to leave it as such.}
 
 \item{self_ranking}{Name of the column containing answers' self-ranking.
 Provide if model should be based on top answers self-chosen by the participant.
