@@ -1,6 +1,6 @@
 #' Creativity assessment through semantic distance dataset
 #'
-#' A dataset from Forthmann, Karwowski & Beaty ([2023](https://doi.org/10.1037/aca0000571)) paper.
+#' A dataset from Forthmann, Karwowski & Beaty (2023) paper.
 #' It contains a set of responses in Alternative Uses Task for different items with their
 #' semantic distance assessment.
 #'
@@ -15,6 +15,7 @@
 #' }
 #'
 #' @source <https://osf.io/7rgsp/>
+#' @references \doi{10.1037/aca0000571}
 "mtscr_creativity"
 
 #' @rdname mtscr_self_rank
@@ -31,4 +32,7 @@
 #'   \item{avr}{average judges' raiting}
 #'   \item{top_two}{indicator of self-chosen two best answer; 1 if chosen, 0 if not}
 #' }
+#'
+#' @source <https://osf.io/7rgsp/>
+#' @references \doi{10.1037/aca0000571}
 "mtscr_self_rank"

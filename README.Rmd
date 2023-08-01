@@ -13,18 +13,24 @@ knitr::opts_chunk$set(
 )
 ```
 
-# Multidimensional Top Scoring for Creativity Research <img src="./man/figures/mtscr-hex.svg" width="200" align="right"/> {#multidimentional-top-scoring-for-creativity-research}
+# Multidimensional Top Scoring for Creativity Research <img src="./man/figures/mtscr-hex.svg" width="200" align="right"/> {#multidimensional-top-scoring-for-creativity-research}
 
 <!-- badges: start -->
 
-[![codecov](https://codecov.io/gh/jakub-jedrusiak/mtscr/branch/main/graph/badge.svg?token=N3UGHFK5QN)](https://codecov.io/gh/jakub-jedrusiak/mtscr) [![R-CMD-check](https://github.com/jakub-jedrusiak/mtscr/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/jakub-jedrusiak/mtscr/actions/workflows/R-CMD-check.yaml)
-[![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
+[![codecov](https://codecov.io/gh/jakub-jedrusiak/mtscr/branch/main/graph/badge.svg?token=N3UGHFK5QN)](https://app.codecov.io/gh/jakub-jedrusiak/mtscr) [![R-CMD-check](https://github.com/jakub-jedrusiak/mtscr/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/jakub-jedrusiak/mtscr/actions/workflows/R-CMD-check.yaml)
+[![Lifecycle: stable](https://img.shields.io/badge/lifecycle-stable-green.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
 [![CRAN status](https://www.r-pkg.org/badges/version/mtscr)](https://CRAN.R-project.org/package=mtscr)
 <!-- badges: end -->
 
 An R adaptation of Multidimensional Top Scoring method presented by Forthmann, Karwowski and Beaty ([2023](https://doi.org/10.1037/aca0000571)) using the code from the [OSF database](https://osf.io/7rgsp/). The code was adapted to use the [tidyverse](https://www.tidyverse.org/) framework for greater flexibility.
 
 ## Installation {#installation}
+
+Install mtscr with:
+
+``` r
+install.packages("mtscr")
+```
 
 You can install the development version of mtscr from [GitHub](https://github.com/) with:
 
@@ -33,11 +39,9 @@ You can install the development version of mtscr from [GitHub](https://github.co
 devtools::install_github("jakub-jedrusiak/mtscr")
 ```
 
-The mtscr package is not on CRAN yet.
-
 ## Usage {#usage}
 
-Basic usage involves scoring participants' responses to a divergent thinking task. The package includes a sample dataset `mtscr_creativity` with 4652 responses to the [Alternative Uses Task](https://en.wikipedia.org/wiki/Alternative_uses_test) with semantic distance scored. The dataset comes from the original paper (Forthmann, Karwowski and Beaty, [2023](https://doi.org/10.1037/aca0000571)).
+Basic usage involves scoring participants' responses to a divergent thinking task. The package includes a sample dataset `mtscr_creativity` with 4652 responses to the [Alternative Uses Task](https://en.wikipedia.org/wiki/Guilford%27s_Alternate_Uses) with semantic distance scored. The dataset comes from the original paper (Forthmann, Karwowski and Beaty, [2023](https://doi.org/10.1037/aca0000571)).
 
 The main function is `mtscr_scores()` which returns a dataframe with scored responses. It takes a dataframe with responses, an ID column, an item column and a score column as arguments. The score column should contain semantic distance scores for each response. The function adds columns with scores for each person. The number of creativity scores is based on a given number of top answers provided by the `top` argument.
 

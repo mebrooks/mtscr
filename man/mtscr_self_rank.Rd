@@ -16,11 +16,17 @@ A tibble with 3225 rows and 4 columns:
 }
 }
 }
+\source{
+\url{https://osf.io/7rgsp/}
+}
 \usage{
 mtscr_self_rank
 }
 \description{
 An example dataset with best answers self-chosen by the participant. Use with \code{self_ranking}
 argument in \link[=mtscr_model]{mtscr_model}.
+}
+\references{
+\doi{10.1037/aca0000571}
 }
 \keyword{datasets}

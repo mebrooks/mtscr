@@ -9,3 +9,5 @@
 ^\.lintr$
 ^\.covrignore$
 ^\.vscode$
+^cran-comments\.md$
+^CRAN-SUBMISSION$

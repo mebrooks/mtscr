@@ -1,8 +1,17 @@
 Package: mtscr
 Type: Package
-Title: Multidimentional Top Scoring for Creativity Research
-Version: 0.1.0
+Title: Multidimensional Top Scoring for Creativity Research
+Version: 1.0.0
 Authors@R: c(
+    person(
+      "Jakub", "Jędrusiak",
+      email = "kuba23031999@gmail.com",
+      role = c("aut", "cre", "cph"),
+      comment = c(
+        ORCID = "0000-0002-6481-8210",
+        affiliation = "University of Wrocław"
+        )
+      ),
     person(
       "Boris", "Forthmann",
       email = "boris.forthmann@uni-muenster.de",
@@ -10,15 +19,6 @@ Authors@R: c(
       comment = c(
         ORCID = "0000-0001-9755-7304",
         affiliation = "University of Münster"
-      )
-    ),
-    person(
-      "Maciej", "Karwowski",
-      email = "maciej.karwowski@uwr.edu.pl",
-      role = "aut",
-      comment = c(
-        ORCID = "0000-0001-6974-1673",
-        affiliation = "University of Wrocław"
       )
     ),
     person(
@@ -31,17 +31,17 @@ Authors@R: c(
         )
       ),
     person(
-      "Jakub", "Jędrusiak",
-      email = "kuba23031999@gmail.com",
-      role = c("aut", "cre"),
+      "Maciej", "Karwowski",
+      email = "maciej.karwowski@uwr.edu.pl",
+      role = "aut",
       comment = c(
-        ORCID = "0000-0002-6481-8210",
+        ORCID = "0000-0001-6974-1673",
         affiliation = "University of Wrocław"
-        )
       )
     )
-Description: R implementation of Multidimentional Top Scoring
-    method for creativity assesment. Proposed by Forthmann,
+  )
+Description: Implementation of Multidimensional Top Scoring
+    method for creativity assessment proposed by Forthmann,
     Karwowski and Beaty (2023).
 License: MIT + file LICENSE
 Encoding: UTF-8
@@ -60,10 +60,10 @@ Imports:
     purrr,
     readr,
     rlang (>= 0.4.11),
-    shiny,
     stringr,
     tibble
 Suggests: 
+    shiny,
     covr,
     datamods,
     DT,

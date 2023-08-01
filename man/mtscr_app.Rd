@@ -4,12 +4,7 @@
 \alias{mtscr_app}
 \title{Shiny GUI for mtscr}
 \usage{
-mtscr_app(debug_mode = 0)
-}
-\arguments{
-\item{debug_mode}{Integer. If 0, app runs normally. If 1, \code{needed_packages} are
-returned. If 2, an invalid package is added to \code{needed_packages} and an error
-is thrown.}
+mtscr_app()
 }
 \value{
 Runs the app. No explicit return value.
@@ -51,5 +46,5 @@ mtscr_app()
 Forthmann, B., Karwowski, M., & Beaty, R. E. (2023).
 Don’t throw the “bad” ideas away!
 Multidimensional top scoring increases reliability of divergent thinking tasks.
-Psychology of Aesthetics, Creativity, and the Arts. \url{https://doi.org/10.1037/aca0000571}
+Psychology of Aesthetics, Creativity, and the Arts. \doi{10.1037/aca0000571}
 }

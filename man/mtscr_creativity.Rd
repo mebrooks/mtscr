@@ -26,8 +26,11 @@ mtscr_creativity
 a \link[tibble:tibble-package]{tibble}
 }
 \description{
-A dataset from Forthmann, Karwowski & Beaty (\href{https://doi.org/10.1037/aca0000571}{2023}) paper.
+A dataset from Forthmann, Karwowski & Beaty (2023) paper.
 It contains a set of responses in Alternative Uses Task for different items with their
 semantic distance assessment.
+}
+\references{
+\doi{10.1037/aca0000571}
 }
 \keyword{datasets}

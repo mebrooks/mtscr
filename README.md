@@ -5,10 +5,10 @@
 
 <!-- badges: start -->
 
-[![codecov](https://codecov.io/gh/jakub-jedrusiak/mtscr/branch/main/graph/badge.svg?token=N3UGHFK5QN)](https://codecov.io/gh/jakub-jedrusiak/mtscr)
+[![codecov](https://codecov.io/gh/jakub-jedrusiak/mtscr/branch/main/graph/badge.svg?token=N3UGHFK5QN)](https://app.codecov.io/gh/jakub-jedrusiak/mtscr)
 [![R-CMD-check](https://github.com/jakub-jedrusiak/mtscr/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/jakub-jedrusiak/mtscr/actions/workflows/R-CMD-check.yaml)
 [![Lifecycle:
-experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
+stable](https://img.shields.io/badge/lifecycle-stable-green.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
 [![CRAN
 status](https://www.r-pkg.org/badges/version/mtscr)](https://CRAN.R-project.org/package=mtscr)
 <!-- badges: end -->
@@ -22,6 +22,12 @@ flexibility.
 
 ## Installation
 
+Install mtscr with:
+
+``` r
+install.packages("mtscr")
+```
+
 You can install the development version of mtscr from
 [GitHub](https://github.com/) with:
 
@@ -30,16 +36,15 @@ You can install the development version of mtscr from
 devtools::install_github("jakub-jedrusiak/mtscr")
 ```
 
-The mtscr package is not on CRAN yet.
-
 ## Usage
 
 Basic usage involves scoring participants’ responses to a divergent
 thinking task. The package includes a sample dataset `mtscr_creativity`
 with 4652 responses to the [Alternative Uses
-Task](https://en.wikipedia.org/wiki/Alternative_uses_test) with semantic
-distance scored. The dataset comes from the original paper (Forthmann,
-Karwowski and Beaty, [2023](https://doi.org/10.1037/aca0000571)).
+Task](https://en.wikipedia.org/wiki/Guilford%27s_Alternate_Uses) with
+semantic distance scored. The dataset comes from the original paper
+(Forthmann, Karwowski and Beaty,
+[2023](https://doi.org/10.1037/aca0000571)).
 
 The main function is `mtscr_scores()` which returns a dataframe with
 scored responses. It takes a dataframe with responses, an ID column, an
@@ -56,14 +61,14 @@ mtscr_score(mtscr_creativity, id, item, SemDis_MEAN, top = 1:2)
 #> # A tibble: 149 × 3
 #>    id    .creativity_score_top1 .creativity_score_top2
 #>    <chr>                  <dbl>                  <dbl>
-#>  1 84176                 0.142                  0.0696
-#>  2 84177                -0.509                 -0.494 
-#>  3 84178                -0.0737                -0.0990
-#>  4 84188                 0.530                  0.527 
+#>  1 84176                 0.142                  0.0681
+#>  2 84177                -0.508                 -0.494 
+#>  3 84178                -0.0733                -0.0995
+#>  4 84188                 0.529                  0.527 
 #>  5 84193                -0.299                 -0.350 
-#>  6 84206                -0.310                 -0.301 
-#>  7 84211                -0.0462                 0.0360
-#>  8 84226                 0.239                  0.211 
+#>  6 84206                -0.312                 -0.301 
+#>  7 84211                -0.0464                 0.0356
+#>  8 84226                 0.238                  0.210 
 #>  9 84228                 0.137                  0.139 
 #> 10 84236                 0.459                  0.422 
 #> # ℹ 139 more rows
@@ -83,9 +88,9 @@ mtscr_model(mtscr_creativity, id, item, SemDis_MEAN, top = 1:3) |>
 #> # A tibble: 3 × 9
 #>   model  nobs sigma logLik    AIC    BIC df.residual emp_rel   FDI
 #>   <chr> <int> <dbl>  <dbl>  <dbl>  <dbl>       <int>   <dbl> <dbl>
-#> 1 top1   4621 0.735 -5335. 10730. 10923.        4591   0.845 0.919
-#> 2 top2   4621 0.767 -5511. 11082. 11275.        4591   0.869 0.932
-#> 3 top3   4621 0.825 -5823. 11705. 11898.        4591   0.877 0.936
+#> 1 top1   4585 0.736 -5298. 10657. 10850.        4555   0.877 0.936
+#> 2 top2   4585 0.767 -5472. 11003. 11196.        4555   0.892 0.944
+#> 3 top3   4585 0.825 -5777. 11613. 11806.        4555   0.896 0.947
 ```
 
 ### Graphical User Interface

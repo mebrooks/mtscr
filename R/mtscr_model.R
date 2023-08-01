@@ -17,6 +17,9 @@
 #' @examples
 #' data("mtscr_creativity", package = "mtscr")
 #'
+#' mtscr_creativity <- mtscr_creativity |>
+#'   dplyr::slice_sample(n = 300) # for performance, ignore
+#'
 #' mtscr_model(mtscr_creativity, id, item, SemDis_MEAN) |>
 #'   summary()
 #'
@@ -29,7 +32,7 @@
 #' mtscr_model(data, id, item, SemDis_MEAN, prepared = TRUE)
 #'
 #' # extract effects for creativity score by hand
-#' model <- mtscr_model(mtscr_creativity, id, item, SemDis_MEAN, top = 2)
+#' model <- mtscr_model(mtscr_creativity, id, item, SemDis_MEAN, top = 1)
 #' creativity_score <- glmmTMB::ranef(model)$cond$id[, 1]
 mtscr_model <- function(df, id_column, item_column = NULL, score_column, top = 1, prepared = FALSE, ties_method = c("random", "average"), normalise = TRUE, self_ranking = NULL) {
   id_column <- rlang::ensym(id_column)

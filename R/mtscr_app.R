@@ -4,9 +4,6 @@
 #'
 #' @return Runs the app. No explicit return value.
 #'
-#' @param debug_mode Integer. If 0, app runs normally. If 1, `needed_packages` are
-#'     returned. If 2, an invalid package is added to `needed_packages` and an error
-#'    is thrown.
 #' @export
 #'
 #' @details
@@ -38,18 +35,14 @@
 #'   Forthmann, B., Karwowski, M., & Beaty, R. E. (2023).
 #'     Don’t throw the “bad” ideas away!
 #'     Multidimensional top scoring increases reliability of divergent thinking tasks.
-#'     Psychology of Aesthetics, Creativity, and the Arts. [https://doi.org/10.1037/aca0000571](https://doi.org/10.1037/aca0000571)
+#'     Psychology of Aesthetics, Creativity, and the Arts. \doi{10.1037/aca0000571}
 #'
 #' @examples
 #' \dontrun{
 #' mtscr_app()
 #' }
-mtscr_app <- function(debug_mode = 0) {
-  needed_packages <- if (debug_mode == 2) {
-    c("DT", "datamods", "writexl", "shinyWidgets", "INVALID_PACKAGE")
-  } else {
-    c("DT", "datamods", "writexl", "shinyWidgets")
-  }
+mtscr_app <- function() {
+  needed_packages <- c("shiny", "DT", "datamods", "writexl", "shinyWidgets")
 
   needed_packages <- sapply(needed_packages, \(x) {
     if (system.file(package = x) != "") {
@@ -79,9 +72,6 @@ mtscr_app <- function(debug_mode = 0) {
       )
     )
   }
-  if (debug_mode %in% 1:2) {
-    return(needed_packages)
-  } else {
-    shiny::runApp(app_dir, display.mode = "normal")
-  }
+
+  shiny::runApp(app_dir, display.mode = "normal")
 }
