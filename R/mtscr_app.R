@@ -38,7 +38,7 @@
 #'     Psychology of Aesthetics, Creativity, and the Arts. \doi{10.1037/aca0000571}
 #'
 #' @examples
-#' \dontrun{
+#'if(interactive()){
 #' mtscr_app()
 #' }
 mtscr_app <- function() {

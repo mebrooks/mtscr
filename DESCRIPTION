@@ -41,8 +41,8 @@ Authors@R: c(
     )
   )
 Description: Implementation of Multidimensional Top Scoring
-    method for creativity assessment proposed by Forthmann,
-    Karwowski and Beaty (2023).
+    method for creativity assessment proposed in
+    Boris Forthmann, Maciej Karwowski, Roger E. Beaty (2023) <doi:10.1037/aca0000571>.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true

@@ -6,7 +6,7 @@
 \alias{mtscr-package}
 \title{mtscr: Multidimensional Top Scoring for Creativity Research}
 \description{
-Implementation of Multidimensional Top Scoring method for creativity assessment proposed by Forthmann, Karwowski and Beaty (2023).
+Implementation of Multidimensional Top Scoring method for creativity assessment proposed in Boris Forthmann, Maciej Karwowski, Roger E. Beaty (2023) \doi{10.1037/aca0000571}.
 }
 \author{
 \strong{Maintainer}: Jakub Jędrusiak \email{kuba23031999@gmail.com} (\href{https://orcid.org/0000-0002-6481-8210}{ORCID}) (University of Wrocław) [copyright holder]

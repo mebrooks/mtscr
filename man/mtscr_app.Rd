@@ -34,7 +34,7 @@ in the upper dropdown list. Use \code{id} for the ID column, \code{item} for the
 column and \code{SemDis_MEAN} for the score column.
 }
 \examples{
-\dontrun{
+if(interactive()){
 mtscr_app()
 }
 }
