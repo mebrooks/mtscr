@@ -9,6 +9,10 @@
 \alias{as_name}
 \alias{as_label}
 \title{Tidy eval helpers}
+\value{
+Functions imported from rlang, see
+their documentation for the return values.
+}
 \description{
 This page lists the tidy eval tools reexported in this package from
 rlang. To learn about using tidy eval in scripts and packages at a

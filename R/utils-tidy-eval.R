@@ -97,7 +97,8 @@
 #'   `as_label()` handles those cases gracefully. If your code assumes
 #'   a simple column name, use `as_name()` instead. This is safer
 #'   because it throws an error if the input is not a name as expected.
-#'
+#' @return Functions imported from rlang, see
+#'   their documentation for the return values.
 #' @md
 #' @name tidyeval
 #' @keywords internal
