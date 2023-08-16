@@ -1,7 +1,7 @@
 Package: mtscr
 Type: Package
 Title: Multidimensional Top Scoring for Creativity Research
-Version: 1.0.0
+Version: 1.0.0.9000
 Authors@R: c(
     person(
       "Jakub", "Jędrusiak",
