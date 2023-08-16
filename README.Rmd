@@ -19,7 +19,7 @@ knitr::opts_chunk$set(
 
 [![codecov](https://codecov.io/gh/jakub-jedrusiak/mtscr/branch/main/graph/badge.svg?token=N3UGHFK5QN)](https://app.codecov.io/gh/jakub-jedrusiak/mtscr) [![R-CMD-check](https://github.com/jakub-jedrusiak/mtscr/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/jakub-jedrusiak/mtscr/actions/workflows/R-CMD-check.yaml)
 [![Lifecycle: stable](https://img.shields.io/badge/lifecycle-stable-green.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
-[![CRAN status](https://www.r-pkg.org/badges/version/mtscr)](https://CRAN.R-project.org/package=mtscr)
+[![CRAN/METACRAN](https://img.shields.io/cran/v/mtscr)](https://CRAN.R-project.org/package=mtscr)
 <!-- badges: end -->
 
 An R adaptation of Multidimensional Top Scoring method presented by Forthmann, Karwowski and Beaty ([2023](https://doi.org/10.1037/aca0000571)) using the code from the [OSF database](https://osf.io/7rgsp/). The code was adapted to use the [tidyverse](https://www.tidyverse.org/) framework for greater flexibility.
